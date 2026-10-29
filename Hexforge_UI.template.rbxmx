@@ -1,0 +1,1150 @@
+<?xml version='1.0' encoding='utf-8'?>
+<roblox version="4"><Item class="Script" referent="RBX0"><Properties><string name="Name">HEXFORGE_UI</string><ProtectedString name="Source">-- HEXFORGE UI 1.1 / Check-UI edition / native acceptance NOT_RUN
+local Binary=(function()
+local M={}
+-- Cooperative CPU budget, not a mandatory frame delay per 64 KiB.
+local function budget()
+ local last=os.clock()
+ return function()if task and os.clock()-last&gt;=.008 then task.wait();last=os.clock()end end
+end
+function M.inflate(packed,expected)
+ assert(expected&gt;=0 and expected&lt;=268435456,"Açılmış veri güvenlik sınırı")
+local position=1;local bucket=0;local bits=0
+local function read(n)
+ while bits&lt;n do local v=string.byte(packed,position);assert(v,'Truncated paket data');bucket+=v*2^bits;bits+=8;position+=1 end
+ local result=bucket%2^n;bucket=math.floor(bucket/2^n);bits-=n;return result
+end
+local function tree(lengths,count)
+ local counts={};for i=0,count-1 do local l=lengths[i]or 0;if l&gt;0 then counts[l]=(counts[l]or 0)+1 end end
+ local code=0;local nextCode={};local t={}
+ for length=1,15 do code=(code+(counts[length-1]or 0))*2;nextCode[length]=code;t[length]={}end
+ for symbol=0,count-1 do local len=lengths[symbol]or 0;if len&gt;0 then t[len][nextCode[len]]=symbol;nextCode[len]+=1 end end
+ return t
+end
+local function symbol(t)
+ local code=0;for len=1,15 do code=code*2+read(1);local value=t[len][code];if value~=nil then return value end end
+ error('Invalid paket Huffman code')
+end
+local LB={3,4,5,6,7,8,9,10,11,13,15,17,19,23,27,31,35,43,51,59,67,83,99,115,131,163,195,227,258}
+local LE={0,0,0,0,0,0,0,0,1,1,1,1,2,2,2,2,3,3,3,3,4,4,4,4,5,5,5,5,0}
+local DB={1,2,3,4,5,7,9,13,17,25,33,49,65,97,129,193,257,385,513,769,1025,1537,2049,3073,4097,6145,8193,12289,16385,24577}
+local DE={0,0,0,0,1,1,2,2,3,3,4,4,5,5,6,6,7,7,8,8,9,9,10,10,11,11,12,12,13,13}
+local order={16,17,18,0,8,7,9,6,10,5,11,4,12,3,13,2,14,1,15}
+local output=buffer.create(expected);local written=0;local last=0;local yield=budget()
+local function put(v)assert(written&lt;expected,'Paket buffer overflow');buffer.writeu8(output,written,v);written+=1;if written%16384==0 then yield()end end
+repeat
+ last=read(1);local kind=read(2)
+ if kind==0 then
+  read(bits%8);local len=read(16);local complement=read(16);assert(len+complement==65535,'Invalid stored block')
+  assert(written+len&lt;=expected and position+len-1&lt;=#packed,'Kesik/taşan stored blok');buffer.writestring(output,written,packed:sub(position,position+len-1));written+=len;position+=len;yield()
+ else
+  local litLengths={};local distLengths={};local litCount=288;local distCount=32
+  if kind==1 then
+   for i=0,287 do litLengths[i]=i&lt;=143 and 8 or(i&lt;=255 and 9 or(i&lt;=279 and 7 or 8))end
+   for i=0,31 do distLengths[i]=5 end
+  elseif kind==2 then
+   litCount=read(5)+257;distCount=read(5)+1;local numCodes=read(4)+4;local cl={}
+   for i=1,numCodes do cl[order[i]]=read(3)end
+   local clTree=tree(cl,19);local lengths={};local at=0
+   while at&lt;litCount+distCount do
+    local value=symbol(clTree)
+    if value&lt;16 then lengths[at]=value;at+=1
+    else
+     local repeatCount;local previous=0
+     if value==16 then assert(at&gt;0,'Invalid repeat');previous=lengths[at-1];repeatCount=read(2)+3 elseif value==17 then repeatCount=read(3)+3 else repeatCount=read(7)+11 end
+     for _=1,repeatCount do lengths[at]=previous;at+=1 end
+    end
+   end
+   assert(at==litCount+distCount,'Invalid length tree')
+   for i=0,litCount-1 do litLengths[i]=lengths[i]end
+   for i=0,distCount-1 do distLengths[i]=lengths[litCount+i]end
+  else error('Invalid DEFLATE block')end
+  local litTree=tree(litLengths,litCount);local distTree=tree(distLengths,distCount)
+  while true do
+   local value=symbol(litTree)
+   if value&lt;256 then put(value)elseif value==256 then break else
+    assert(value&lt;=285,'Invalid length');local idx=value-256;local length=LB[idx]+read(LE[idx]);local distanceCode=symbol(distTree);assert(distanceCode&lt;30,'Invalid distance')
+    local distance=DB[distanceCode+1]+read(DE[distanceCode+1]);assert(distance&lt;=written,'Invalid backward reference')
+    assert(written+length&lt;=expected,'Paket buffer overflow')
+    local start=written-distance;local available=distance;local left=length;local before=written
+    while left&gt;0 do local n=math.min(left,available);buffer.copy(output,written,output,start,n);written+=n;available+=n;left-=n end
+    if math.floor(before/16384)~=math.floor(written/16384)then yield()end
+   end
+  end
+ end
+until last==1
+assert(written==expected,'Paket length mismatch')
+
+return buffer.tostring(output)
+end
+local crcTable={}
+for i=0,255 do local c=i;for _=1,8 do c=bit32.bxor(bit32.rshift(c,1),bit32.band(c,1)==1 and 0xEDB88320 or 0)end;crcTable[i]=c end
+function M.crc(s)
+ local c=0xFFFFFFFF;local yield=budget()
+ for i=1,#s do if i%16384==0 then yield()end;c=bit32.bxor(bit32.rshift(c,8),crcTable[bit32.band(bit32.bxor(c,string.byte(s,i)),255)])end
+ return bit32.bxor(c,0xFFFFFFFF)
+end
+function M.zip(s)
+ assert(type(s)=='string'and #s&lt;=134217728,'ZIP en fazla 128 MiB olmalı')
+ local function u16(p)assert(p&gt;=1 and p+1&lt;=#s,'Kesik ZIP');local a,b=string.byte(s,p,p+1);return a+b*256 end
+ local function u32(p)return u16(p)+u16(p+2)*65536 end
+ local e
+ for p=#s-21,math.max(1,#s-65557),-1 do
+  if s:sub(p,p+3)=='PK\005\006'and p+21+u16(p+20)==#s then e=p;break end
+ end
+ assert(e,'ZIP merkez dizini bulunamadı');assert(u16(e+4)==0 and u16(e+6)==0,'Çok diskli ZIP desteklenmiyor')
+ local count=u16(e+10);assert(count==u16(e+8)and count&lt;65535,'ZIP64 desteklenmiyor')
+ local centralSize,centralOffset=u32(e+12),u32(e+16);assert(centralOffset+centralSize==e-1,'Bozuk merkez dizini')
+ local p=centralOffset+1;local entries={};local total=0
+ for _=1,count do
+  assert(s:sub(p,p+3)=='PK\001\002','Bozuk ZIP girdisi');local flag,method=u16(p+8),u16(p+10)
+  assert(bit32.band(flag,1)==0,'Şifreli ZIP desteklenmiyor');assert(method==0 or method==8,'Yalnız ZIP Store/Deflate desteklenir')
+  local crc,compressed,size=u32(p+16),u32(p+20),u32(p+24);local nl,xl,cl=u16(p+28),u16(p+30),u16(p+32);local start=u32(p+42)+1
+  assert(size&lt;0xFFFFFFFF and compressed&lt;0xFFFFFFFF,'ZIP64 desteklenmiyor');local name=s:sub(p+46,p+45+nl)
+  assert(#name==nl and nl&gt;0 and not name:find('[%z\\:]')and name:sub(1,1)~='/'and not name:find('%.%.'),'Güvensiz ZIP yolu')
+  assert(not entries[name],'Tekrarlanan ZIP yolu');assert(u16(p+34)==0,'Çok diskli girdi')
+  assert(bit32.band(bit32.rshift(u32(p+38),16),0xF000)~=0xA000,'Sembolik bağ yasak')
+  total+=size;assert(total&lt;=268435456,'ZIP açılımı en fazla 256 MiB olabilir')
+  assert(s:sub(start,start+3)=='PK\003\004','Yerel başlık yok');assert(u16(start+8)==method and u16(start+6)==flag,'ZIP başlık uyumsuzluğu')
+  local lnl,lxl=u16(start+26),u16(start+28);assert(s:sub(start+30,start+29+lnl)==name,'ZIP ad uyumsuzluğu')
+  local offset=start+30+lnl+lxl;assert(offset+compressed-1&lt;=centralOffset,'ZIP veri sınırı yanlış')
+  entries[name]={size=size,crc=crc,method=method,offset=offset,compressed=compressed}
+  p+=46+nl+xl+cl
+ end
+ assert(p==e,'Merkez dizin uzunluğu yanlış')
+ local z={entries=entries,verified={}};local cache={};local cachedBytes=0
+ function z:read(name)
+  local v=assert(entries[name],'ZIP dosyası eksik: '..tostring(name));if cache[name]then return cache[name]end;local packed=s:sub(v.offset,v.offset+v.compressed-1)
+  local raw=v.method==0 and packed or M.inflate(packed,v.size)
+  assert(#raw==v.size and M.crc(raw)==v.crc,'CRC/boyut hatası: '..name);self.verified[name]=true
+  if not name:match('%.rgba$')and cachedBytes+#raw&lt;=16777216 then cache[name]=raw;cachedBytes+=#raw end
+  return raw
+ end
+ return z
+end
+return M
+
+end)()
+local Schema=(function()
+local M={}
+M.classes={CanvasGroup=true,Frame=true,TextLabel=true,TextButton=true,ImageLabel=true,ImageButton=true,ScrollingFrame=true,UIListLayout=true,UIGridLayout=true,UIPadding=true,UICorner=true,UIStroke=true,UIGradient=true,UIAspectRatioConstraint=true,UIScale=true,UISizeConstraint=true}
+M.props={TileSize='u2',GroupTransparency='num',Active='bool',Size='u2',Position='u2',AnchorPoint='v2',BackgroundColor3='color',BackgroundTransparency='num',BorderSizePixel='num',Visible='bool',ClipsDescendants='bool',ZIndex='num',LayoutOrder='num',Rotation='num',Text='str',TextSize='num',TextColor3='color',TextTransparency='num',TextWrapped='bool',RichText='bool',AutoButtonColor='bool',TextStrokeTransparency='num',TextStrokeColor3='color',ImageColor3='color',ImageTransparency='num',ImageRectOffset='v2',ImageRectSize='v2',SliceCenter='rect',SliceScale='num',CanvasSize='u2',ScrollBarThickness='num',ScrollBarImageColor3='color',CornerRadius='u1',Thickness='num',Color='color',Transparency='num',Padding='u1',PaddingTop='u1',PaddingBottom='u1',PaddingLeft='u1',PaddingRight='u1',CellSize='u2',CellPadding='u2',FillDirectionMaxCells='num',AspectRatio='num',Scale='num',MinSize='v2',MaxSize='v2',Offset='v2'}
+M.enums={Font={Gotham=true,GothamBold=true,GothamBlack=true,SourceSans=true,SourceSansBold=true},TextXAlignment={Left=true,Center=true,Right=true},TextYAlignment={Top=true,Center=true,Bottom=true},ScaleType={Stretch=true,Fit=true,Crop=true,Slice=true,Tile=true},AutomaticSize={None=true,X=true,Y=true,XY=true},AutomaticCanvasSize={None=true,X=true,Y=true,XY=true},FillDirection={Horizontal=true,Vertical=true},HorizontalAlignment={Left=true,Center=true,Right=true},VerticalAlignment={Top=true,Center=true,Bottom=true},SortOrder={LayoutOrder=true,Name=true},ApplyStrokeMode={Border=true,Contextual=true},LineJoinMode={Round=true,Bevel=true,Miter=true},ScrollingDirection={X=true,Y=true,XY=true}}
+local function num(x)return type(x)=='number'and x==x and math.abs(x)&lt;=1000000 end
+local function tuple(v,n)if type(v)~='table'or #v~=n then return false end;for _,x in ipairs(v)do if not num(x)then return false end end;return true end
+local function label(x,max)return type(x)=='string'and #x&gt;0 and #x&lt;=max end
+function M.validate(d,z)
+ assert(type(d)=='table'and (d.format=='UIPack/1'or d.format=='UIPack/2'or d.format=='UIPack/3'),'Bu ZIP UIPack/1, UIPack/2 veya UIPack/3 formatında değil')
+ assert(label(d.id,80)and d.id:match('^[%w_%-]+$'),'Paket kimliği yanlış');assert(label(d.title,120),'Paket başlığı eksik')
+ assert(type(d.assets)=='table'and type(d.tree)=='table','Görsel/ağaç bilgisi eksik')
+ local ids={}
+ for _,a in ipairs(d.assets)do
+  assert(label(a.key,80)and a.key:match('^[%w_%-]+$')and not ids[a.key],'Görsel anahtarı yanlış');ids[a.key]=true
+  assert(num(a.width)and num(a.height)and a.width%1==0 and a.height%1==0 and a.width&gt;=1 and a.height&gt;=1 and a.width&lt;=1024 and a.height&lt;=1024,'Görsel boyutu 1–1024 piksel olmalı')
+  assert(label(a.rgba,200)and z.entries[a.rgba]and z.entries[a.rgba].size==a.width*a.height*4,'RGBA8 dosyası eksik/boyutu yanlış')
+  assert(label(a.png,200)and z.entries[a.png],'PNG kaynağı eksik')
+ end
+ local count=0;local names={}
+ local function visit(n,depth)
+  assert(depth&lt;=64 and type(n)=='table'and M.classes[n.class],'İzin verilmeyen UI sınıfı veya derinlik')
+  count+=1;assert(label(n.name,80)and n.name:match('^[%a_][%w_]*$')and not names[n.name],'Benzersiz UI adı gerekli');names[n.name]=n
+  for key,v in pairs(n.props or{})do
+   local t=M.props[key];local e=M.enums[key]
+   if e then assert(type(v)=='string'and e[v],'Enum değeri yanlış: '..key)
+   elseif t=='num'then assert(num(v),'Sayı yanlış: '..key)
+   elseif t=='bool'then assert(type(v)=='boolean','Boolean yanlış')
+   elseif t=='str'then assert(type(v)=='string'and #v&lt;=16000,'Metin çok uzun')
+   elseif t=='color'then assert(tuple(v,3),'Renk yanlış');for _,c in ipairs(v)do assert(c&gt;=0 and c&lt;=255,'RGB aralığı yanlış')end
+   elseif t=='u2'or t=='rect'then assert(tuple(v,4),'4 bileşen gerekli')
+   elseif t=='u1'or t=='v2' then assert(tuple(v,2),'2 bileşen gerekli')
+   else error('İzin verilmeyen özellik: '..tostring(key))end
+  end
+  if n.imageId then assert((n.class=='ImageLabel'or n.class=='ImageButton')and type(n.imageId)=='string'and n.imageId:match('^%d+$')and tonumber(n.imageId)&gt;0 and tonumber(n.imageId)&lt;=9007199254740991,'imageId yanlış');assert(not n.asset,'asset ve imageId birlikte kullanılamaz')end
+  if n.gradient then
+   local g=n.gradient;assert(n.class=='UIGradient'and type(g)=='table','gradient UIGradient gerektirir')
+   for k in pairs(g)do assert(k=='colors'or k=='transparency'or k=='rotation','Bilinmeyen gradient alanı')end
+   local function stops(list,width)
+    assert(type(list)=='table'and #list&gt;=2,'Gradient en az 2 keypoint gerektirir');local previous=-1
+    for _,v in ipairs(list)do assert(tuple(v,width)and v[1]&gt;=0 and v[1]&lt;=1 and v[1]&gt;previous,'Gradient zamanı yanlış');previous=v[1]
+     for j=2,width do assert(v[j]&gt;=0 and v[j]&lt;=(width==4 and 255 or 1),'Gradient değer aralığı yanlış')end
+    end
+    assert(list[1][1]==0 and list[#list][1]==1,'Gradient 0/1 uçları gerekli')
+   end
+   if g.colors then stops(g.colors,4)end;if g.transparency then stops(g.transparency,2)end
+   if g.rotation then assert(num(g.rotation),'Gradient rotation sayı olmalı')end
+  end
+  if n.asset then assert(ids[n.asset]and(n.class=='ImageLabel'or n.class=='ImageButton'),'Görsel bağlantısı yanlış')end
+  if n.action then assert(n.class=='TextButton'or n.class=='ImageButton','Aksiyon yalnız butonda');assert(n.action=='close'or n.action=='demo','Desteklenmeyen aksiyon')end
+  if n.motion then assert(n.motion=='hover'or n.motion=='float'or n.motion=='glow'or n.motion=='snow','Desteklenmeyen hareket');if n.motion=='hover'then assert(n.class=='TextButton'or n.class=='ImageButton','Hover buton gerektirir')elseif n.motion=='snow'then assert(n.class=='Frame','Snow Frame gerektirir')elseif n.motion=='float'then assert(n.class=='ImageLabel'or n.class=='Frame'or n.class=='TextLabel','Float görsel nesne gerektirir')else assert(n.class=='ImageLabel'or n.class=='ImageButton','Glow görsel gerektirir')end end
+  for _,c in ipairs(n.children or{})do visit(c,depth+1)end
+ end
+ visit(d.tree,1);assert(d.tree.class=='Frame','Kök Frame olmalı')
+ assert(tuple(d.designSize,2)and d.designSize[1]&gt;=200 and d.designSize[2]&gt;=200 and d.designSize[1]&lt;=4096 and d.designSize[2]&lt;=4096,'Tasarım boyutu yanlış')
+ local b=d.behavior
+ if b then
+  assert(type(b)=='table','behavior tablo olmalı')
+  for k,_ in pairs(b)do assert(({openAsset=true,startOpen=true,duration=true,blur=true,fovDelta=true,sliders=true,menus=true,defaultMenu=true,demoPurchases=true})[k],'Bilinmeyen behavior: '..tostring(k))end
+  if b.startOpen~=nil then assert(type(b.startOpen)=='boolean','startOpen boolean')end
+  for _,r in ipairs({{'duration',.08,2},{'blur',0,56},{'fovDelta',-20,20}})do if b[r[1]]~=nil then assert(num(b[r[1]])and b[r[1]]&gt;=r[2]and b[r[1]]&lt;=r[3],'Efekt aralığı yanlış: '..r[1])end end
+  local function ref(name,kind)
+   local n=names[name];assert(n,'Etkileşim düğümü yok: '..tostring(name))
+   if kind=='button'then assert(n.class=='ImageButton'or n.class=='TextButton','Buton gerekli')elseif kind=='text'then assert(n.class=='TextLabel','Dinamik TextLabel gerekli')elseif kind=='image'then assert(n.class=='ImageLabel'or n.class=='ImageButton','Image gerekli')end
+   return n
+  end
+  if b.openAsset then assert(ids[b.openAsset],'Açma görseli eksik')end
+  local bound={};local function button(n)ref(n,'button');assert(not bound[n],'Butona iki etkileşim atanamaz');bound[n]=true end
+  local attributes={}
+  for _,v in ipairs(b.sliders or{})do
+   local track=ref(v.track);assert(track.class=='Frame'or track.class=='ImageLabel','Slider track Frame/ImageLabel olmalı');button(v.thumb);if v.fill then ref(v.fill)end;if v.label then ref(v.label,'text')end
+   assert(num(v.min)and num(v.max)and v.max&gt;v.min and num(v.value)and v.value&gt;=v.min and v.value&lt;=v.max and num(v.step)and v.step&gt;0,'Slider aralığı yanlış')
+   assert(label(v.attribute,80)and v.attribute:match('^Value_[%w_]+$'),'Slider attribute Value_ ile başlamalı')
+   assert(not attributes[v.attribute],'Slider attribute tekrarlı');attributes[v.attribute]=true
+   if v.format then assert(v.format=='number'or v.format=='percent','Slider formatı yanlış')end
+  end
+  local pages={}
+  for _,v in ipairs(b.menus or{})do button(v.button);local n=ref(v.panel);assert(n.class=='Frame'or n.class=='CanvasGroup','Menü paneli Frame/CanvasGroup olmalı');assert(not pages[v.panel],'Menü paneli tekrarlı');pages[v.panel]=true end
+  if b.defaultMenu then assert(pages[b.defaultMenu],'defaultMenu bulunamadı')end
+  local productIDs={}
+  for _,v in ipairs(b.demoPurchases or{})do
+   if v.initialOwned~=nil then assert(type(v.initialOwned)=='boolean','initialOwned boolean')end;button(v.button);assert(label(v.id,80)and v.id:match('^[%w_]+$'),'Demo ürün kimliği gerekli');assert(not productIDs[v.id],'Demo ürün id tekrarlı');productIDs[v.id]=true;if v.label then ref(v.label,'text')end
+   if v.image then ref(v.image,'image');for _,key in ipairs({'buyAsset','ownedAsset','equippedAsset'})do assert(ids[v[key]],'Demo durum görseli eksik: '..key)end end
+  end
+ end
+ local codeNames={}
+ for _,c in ipairs(d.scripts or{})do
+  assert(label(c.name,80)and c.name:match('^[%a_][%w_]*$')and not codeNames[c.name],'Kod adı yanlış/tekrarlı');codeNames[c.name]=c
+  assert(c.kind=='LocalScript'or c.kind=='Script'or c.kind=='ModuleScript','Kod sınıfı yanlış')
+  assert(c.target=='UI'or c.target=='Shared'or c.target=='Server'or c.target=='Client','Kod hedefi yanlış')
+  assert((c.target~='Shared'or c.kind=='ModuleScript')and(c.target~='Client'or c.kind=='LocalScript')and(c.target~='UI'or c.kind~='Script')and(c.target~='Server'or c.kind~='LocalScript'),'Kod hedef/sınıf çifti yanlış')
+  assert(label(c.path,240)and z.entries[c.path]and z.entries[c.path].size&gt;0,'Kod dosyası eksik')
+  assert(c.name~='UI_Motion'and c.name~='Package_Start'and c.name~='AssetMap'and c.name~='VFX'and c.name~='Viewport','Ayrılmış kod adı')
+ end
+ if d.controller then assert(codeNames[d.controller]and codeNames[d.controller].kind=='ModuleScript'and codeNames[d.controller].target=='UI','Controller UI ModuleScript olmalı')end
+ local fxNames={}
+ for _,f in ipairs(d.vfx or{})do
+  assert(label(f.name,80)and f.name:match('^[%a_][%w_]*$')and not fxNames[f.name],'VFX adı yanlış');fxNames[f.name]=true
+  assert(ids[f.texture],'VFX texture anahtarı eksik')
+  assert(num(f.rate)and f.rate&gt;=0 and f.rate&lt;=10000,'VFX rate yanlış')
+  assert(tuple(f.lifetime,2)and f.lifetime[1]&gt;0 and f.lifetime[2]&gt;=f.lifetime[1]and f.lifetime[2]&lt;=30,'VFX lifetime yanlış')
+  assert(tuple(f.speed,2)and f.speed[1]&gt;=0 and f.speed[2]&gt;=f.speed[1],'VFX speed yanlış')
+  assert(tuple(f.size,2)and f.size[1]&gt;=0 and f.size[2]&gt;=0 and tuple(f.color,3),'VFX boyut/renk yanlış')
+  for _,v in ipairs(f.color)do assert(v&gt;=0 and v&lt;=255,'VFX renk aralığı yanlış')end
+ end
+ return count
+end
+return M
+
+end)()
+local Library=(function()
+-- Durable local package library. Raw ZIPs, not filesystem paths or temporary IDs.
+local M={};M.MAX_TOTAL_BYTES=128*1024*1024;M.CHUNK=48000
+local function fold(s)return(s:gsub('İ','i'):gsub('I','ı'):gsub('Ç','ç'):gsub('Ğ','ğ'):gsub('Ö','ö'):gsub('Ş','ş'):gsub('Ü','ü')):lower()end
+local KEY='UIPLibraryIndexV3';local alphabet='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
+local lookup={};for i=1,64 do lookup[alphabet:byte(i)]=i-1 end
+local function clone(t)if type(t)~='table'then return t end;local c={};for k,v in pairs(t)do c[k]=clone(v)end;return c end
+local function encode(s)
+ local out={};for i=1,#s,3 do local a,b,c=s:byte(i,i+2);local n=a*65536+(b or 0)*256+(c or 0)
+  out[#out+1]=alphabet:sub(math.floor(n/262144)%64+1,math.floor(n/262144)%64+1)..alphabet:sub(math.floor(n/4096)%64+1,math.floor(n/4096)%64+1)..(b and alphabet:sub(math.floor(n/64)%64+1,math.floor(n/64)%64+1)or'=')..(c and alphabet:sub(n%64+1,n%64+1)or'=')
+ end;return table.concat(out)
+end
+local function decode(s)
+ assert(#s%4==0,'Kütüphane base64 bozuk');local out={}
+ for i=1,#s,4 do local aa,bb,cc,dd=s:byte(i,i+3);local a,b,c,d=lookup[aa],lookup[bb],lookup[cc],lookup[dd];assert(a and b and(c or cc==61)and(d or dd==61),'Kütüphane base64 karakteri bozuk')
+  local n=a*262144+b*4096+(c or 0)*64+(d or 0);out[#out+1]=string.char(math.floor(n/65536)%256);if cc~=61 then out[#out+1]=string.char(math.floor(n/256)%256)end;if dd~=61 then out[#out+1]=string.char(n%256)end
+ end;return table.concat(out)
+end
+function M.new(store)
+ local L={}
+ local function index()
+  local v=store:get(KEY);if v==nil then return{version=3,revision=0,entries={}}end
+  assert(type(v)=='table'and v.version==3 and type(v.entries)=='table'and type(v.revision)=='number','Kütüphane indeksi bozuk; otomatik üzerine yazılmadı')
+  v=clone(v);local ids={}
+  for _,e in ipairs(v.entries)do
+   assert(type(e.id)=='string'and not ids[e.id]and type(e.name)=='string'and type(e.bytes)=='number'and e.bytes&gt;=0 and type(e.payload)=='string'and type(e.chunks)=='number'and e.chunks&gt;=1 and type(e.crc)=='number','Kütüphane kaydı bozuk');ids[e.id]=true
+  end
+  return v
+ end
+ local function collect(payload,chunks,entries)
+  local readable,latest=pcall(index);if not readable then return end;entries=latest.entries
+  for _,e in ipairs(entries)do if e.payload==payload then return end end
+  for n=1,chunks do pcall(function()store:set(payload..'_'..n,nil)end)end
+ end
+ local function commit(before,after)
+  assert(index().revision==before.revision,'Başka Studio oturumu kütüphaneyi değiştirdi; tekrar dene')
+  after.revision=before.revision+1
+  local ok,err=pcall(function()store:set(KEY,after);local check=index();assert(check.revision==after.revision and #check.entries==#after.entries,'Kütüphane yazısı doğrulanamadı');for i,e in ipairs(after.entries)do assert(check.entries[i].id==e.id and check.entries[i].payload==e.payload,'Kütüphane readback farklı')end end)
+  if not ok then
+   local readable,current=pcall(index);local ours=readable and current.revision==after.revision and #current.entries==#after.entries
+   if ours then for i,e in ipairs(after.entries)do if current.entries[i].id~=e.id or current.entries[i].payload~=e.payload then ours=false;break end end end
+   if ours then pcall(function()store:set(KEY,before)end)end
+   error('Kaydetme başarısız; belirsiz/başka oturum indeksi ezilmedi: '..tostring(err),0)
+  end
+ end
+ function L:list(query)
+  local rows=index().entries;query=fold(query or'');local out={}
+  for _,e in ipairs(rows)do if query==''or string.find(fold(e.name),query,1,true)then out[#out+1]=e end end
+  table.sort(out,function(a,b)return a.updated&gt;b.updated or(a.updated==b.updated and a.name&lt;b.name)end);return out
+ end
+ function L:load(id)
+  for _,e in ipairs(index().entries)do if e.id==id then
+   local pieces={};for n=1,e.chunks do local s=store:get(e.payload..'_'..n);assert(type(s)=='string','Kayıt parçası eksik: '..n);pieces[n]=s end
+   local raw=decode(table.concat(pieces));assert(#raw==e.bytes and Binary.crc(raw)==e.crc,'Kayıt boyut/CRC doğrulaması başarısız');return raw,clone(e)
+  end end;error('Kütüphane kaydı bulunamadı',0)
+ end
+ function L:save(name,raw,meta,replace)
+  assert(type(name)=='string','İsim gerekli');name=name:match('^%s*(.-)%s*$');assert(#name&gt;0 and #name&lt;=160 and not name:find('%c'),'İsim 1–160 UTF8 byte olmalı')
+  assert(type(raw)=='string'and #raw&gt;0,'Kaydedilecek ZIP yok');local before=index();local old
+  for _,e in ipairs(before.entries)do if fold(e.name)==fold(name)then old=e;assert(replace,'Bu isim kayıtlı; açıkça Üzerine Yaz seç');break end end
+  local total=#raw;for _,e in ipairs(before.entries)do if not old or e.id~=old.id then total+=e.bytes end end
+  assert(total&lt;=M.MAX_TOTAL_BYTES,'Yerel kütüphane güvenlik kotası aşıldı')
+  local crc=Binary.crc(raw);local reused
+  for _,e in ipairs(before.entries)do if e.bytes==#raw and e.crc==crc then local ok,data=pcall(self.load,self,e.id);if ok and data==raw then reused=e;break end end end
+  local payload=reused and reused.payload or('UIPLibraryDataV3_'..store:uuid());local chunks=reused and reused.chunks or 0;local wrote=false
+  local ok,result=xpcall(function()
+   if not reused then
+    local encoded=encode(raw);chunks=math.ceil(#encoded/M.CHUNK);wrote=true
+    for n=1,chunks do store:set(payload..'_'..n,encoded:sub((n-1)*M.CHUNK+1,n*M.CHUNK));if task then task.wait()end end
+    local verify={};for n=1,chunks do verify[n]=assert(store:get(payload..'_'..n),'Kayıt readback eksik')end
+    local roundtrip=decode(table.concat(verify));assert(roundtrip==raw,'Kayıt readback byte eşleşmiyor')
+   end
+   local entry={id=old and old.id or store:uuid(),name=name,payload=payload,chunks=chunks,bytes=#raw,crc=crc,created=old and old.created or os.time(),updated=os.time(),title=meta.title,packageId=meta.packageId,assetCount=meta.assetCount or 0}
+   local after=clone(before);local list={};for _,e in ipairs(after.entries)do if not old or e.id~=old.id then list[#list+1]=e end end;list[#list+1]=entry;after.entries=list;commit(before,after)
+   if old and old.payload~=payload then collect(old.payload,old.chunks,after.entries)end
+   return entry
+  end,debug.traceback)
+  if not ok then if wrote then collect(payload,chunks,before.entries)end;error(result,0)end
+  return result
+ end
+ function L:delete(id)
+  local before=index();local after=clone(before);after.entries={};local removed
+  for _,e in ipairs(before.entries)do if e.id==id then removed=e else after.entries[#after.entries+1]=e end end
+  assert(removed,'Silinecek kayıt bulunamadı');commit(before,after);collect(removed.payload,removed.chunks,after.entries);return removed
+ end
+ return L
+end
+return M
+
+end)()
+local Bridge=(function()
+local M={ready=false}
+local HS=game:GetService('HttpService');local BASE='http://127.0.0.1:38476';local token=''
+local alphabet='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
+function M.base64(raw)
+ local out={}
+ for i=1,#raw,3 do
+  local a,b,c=raw:byte(i,i+2);local n=a*65536+(b or 0)*256+(c or 0)
+  local x=math.floor(n/262144)%64;local y=math.floor(n/4096)%64;local z=math.floor(n/64)%64;local w=n%64
+  out[#out+1]=alphabet:sub(x+1,x+1)..alphabet:sub(y+1,y+1)..(b and alphabet:sub(z+1,z+1)or'=')..(c and alphabet:sub(w+1,w+1)or'=')
+  if i%49152==1 and i&gt;1 then task.wait()end
+ end
+ return table.concat(out)
+end
+local function call(path,method,data,public)
+ local headers={['Content-Type']='application/json',['X-Hexforge-Pair']=script:WaitForChild('PairToken').Value};if not public then headers.Authorization='Bearer '..token end
+ local request={Url=BASE..path,Method=method,Headers=headers};if data then request.Body=HS:JSONEncode(data)end
+ local ok,response=pcall(HS.RequestAsync,HS,request)
+ if not ok then M.ready=false;token='';error('Yerel köprüye ulaşılamadı. Kopru_Baslat.cmd açık olmalı; Studio HTTP/yerel ağ iznini kontrol et.',0)end
+ local parsed,value=pcall(HS.JSONDecode,HS,response.Body)
+ if not parsed or type(value)~='table'then error('Köprü beklenen JSON yanıtını vermedi.',0)end
+ if not response.Success then
+  if response.StatusCode==401 then M.ready=false;token=''end
+  error(value.error or('Köprü HTTP '..response.StatusCode),0)
+ end
+ return value
+end
+local function handshake(path,data)
+ M.ready=false;token=''
+ local health=call('/health','GET',nil,true);assert(health.app=='HexforgeUI' and health.protocol==3,'Hexforge köprüsü 1.0 gerekli; eski köprüyü kapat.')
+ local result=call(path,'POST',data,true);assert(type(result.token)=='string'and #result.token&gt;20,'Oturum açılamadı')
+ token=result.token;M.ready=true;return result.message
+end
+function M.connect(key,remember)return handshake('/configure',{key=key,remember=remember==true})end
+function M.resume()return handshake('/resume',{})end
+function M.remember(value)return call('/remember','POST',{remember=value==true})end
+function M.forget()local result=call('/forget','POST',{});M.ready=false;token='';return result end
+function M.upload(pack,a,owner,cancel,log)
+ assert(M.ready,'Önce API bağlantısını aç');assert(not cancel(),'İptal edildi')
+ local raw=pack.zip:read(a.png)
+ local transfer=call('/transfer','POST',{name=(pack.data.id..'_'..a.key):sub(1,50),creator={id=tostring(owner.id),kind=owner.group and'group'or'user'},length=#raw,crc=Binary.crc(raw)})
+ assert(type(transfer.transfer)=='string','Transfer numarası eksik')
+ local seq=0
+ for pos=1,#raw,98304 do
+  if cancel()then pcall(call,'/abort','POST',{transfer=transfer.transfer});error('Transfer iptal edildi',0)end
+  local part=raw:sub(pos,pos+98303)
+  local ack=call('/chunk','POST',{transfer=transfer.transfer,seq=seq,chunk=M.base64(part)})
+  seq+=1;assert(ack.next==seq,'Transfer parçası doğrulanmadı')
+ end
+ local result=call('/complete','POST',{transfer=transfer.transfer})
+ assert(type(result.job)=='string'and result.job:match('^[a-f0-9]+$'),'Köprü iş numarası eksik')
+ local deadline=os.clock()+360
+ while true do
+  assert(not cancel(),'İptal: başlamış cloud işi köprüde tamamlanabilir; tekrar denemede hash cache kullanılır')
+  local state=call('/jobs/'..result.job,'GET')
+  if state.status=='done'then
+   local id=tostring(state.assetId);assert(id:match('^%d+$')and tonumber(id)&gt;0,'Geçersiz gerçek assetId');return id
+  elseif state.status=='error'then if state.code==401 then M.ready=false;token=''end;error(state.message or'Open Cloud upload başarısız',0)end
+  assert(os.clock()&lt;deadline,'Upload bekleme süresi doldu; köprü açıkken aynı paketle tekrar dene')
+  task.wait(.25)
+ end
+end
+return M
+
+end)()
+local Motion=(function()
+local M={}
+function M.mount(gui,refs)
+ local TS=game:GetService('TweenService');local UIS=game:GetService('UserInputService');local Run=game:GetService('RunService');local HS=game:GetService('HttpService')
+ local runtime=gui:IsA('ScreenGui');local viewport=gui:WaitForChild('Viewport');local window=viewport:WaitForChild('Window');local scale=window:WaitForChild('ResponsiveScale');local backdrop=viewport:WaitForChild('Backdrop');local reopen=viewport:WaitForChild('Reopen');local toast=viewport:WaitForChild('Toast')
+ local behavior=HS:JSONDecode(gui:GetAttribute('HFBehavior')or'{}');local duration=behavior.duration or .28
+ if not refs then local map=gui:FindFirstChild('AssetMap');refs=map and HS:JSONDecode(map.Value)or{} end
+ local connections={};local active={};local dead=false;local opened=false;local target=1;local epoch=0;local notifyEpoch=0
+ local function bind(signal,fn)local c=signal:Connect(fn);table.insert(connections,c);return c end
+ local function tween(o,t,p)
+  if active[o]then active[o]:Cancel()end
+  local tw=TS:Create(o,TweenInfo.new(t/(gui:GetAttribute('HFSpeed')or 1),Enum.EasingStyle.Quint,Enum.EasingDirection.Out),p);active[o]=tw;tw:Play();return tw
+ end
+ local function find(n)return assert(window:FindFirstChild(n,true),'Etkileşim nesnesi bulunamadı: '..tostring(n))end
+ local function image(o,key)local v=refs[key];if v then if typeof(v)=='Content'then o.ImageContent=v else o.Image=v end end end
+ local camera,blur,proxy,fovConnection,baseFov,lastApplied,ownsFov
+ local function clearCamera(restore)
+  if proxy and active[proxy]then active[proxy]:Cancel();active[proxy]=nil end
+  if fovConnection then fovConnection:Disconnect();fovConnection=nil end
+  if restore and camera and ownsFov and math.abs(camera.FieldOfView-lastApplied)&lt;.05 then camera.FieldOfView=baseFov end
+  if proxy then proxy:Destroy();proxy=nil end;if blur then blur:Destroy();blur=nil end;camera=nil;ownsFov=false
+ end
+ local function cameraOpen()
+  if not runtime then return end
+  clearCamera(true);camera=workspace.CurrentCamera;if not camera then return end
+  baseFov=camera.FieldOfView;lastApplied=baseFov;ownsFov=true
+  blur=Instance.new('BlurEffect');blur.Name='HF_Blur_'..gui.Name;blur.Size=0;blur.Parent=camera
+  proxy=Instance.new('NumberValue');proxy.Value=baseFov
+  fovConnection=proxy.Changed:Connect(function(value)
+   if dead or not camera or not ownsFov then return end
+   if workspace.CurrentCamera~=camera or math.abs(camera.FieldOfView-lastApplied)&gt;.05 then ownsFov=false;return end
+   lastApplied=value;camera.FieldOfView=value
+  end)
+  tween(blur,duration,{Size=behavior.blur or 12});tween(proxy,duration,{Value=math.clamp(baseFov+(behavior.fovDelta or 5),1,120)})
+ end
+ local function cameraClose()
+  if not camera then return end
+  if blur then tween(blur,duration,{Size=0})end
+  if ownsFov and math.abs(camera.FieldOfView-lastApplied)&lt;.05 then tween(proxy,duration,{Value=baseFov})else ownsFov=false end
+  local old=proxy;task.delay(duration+.03,function()if not dead and not opened and proxy==old then clearCamera(true)end end)
+ end
+ local function fit()
+  target=math.max(.05,math.min((viewport.AbsoluteSize.X-24)/gui:GetAttribute('DesignWidth'),(viewport.AbsoluteSize.Y-24)/gui:GetAttribute('DesignHeight'),1.12))*(gui:GetAttribute('HFZoom')or 1)
+  if opened then tween(scale,.16,{Scale=target})end
+ end
+ toast.Size=UDim2.fromOffset(250,34);toast.AnchorPoint=Vector2.new(1,0);toast.Position=UDim2.new(1,-12,0,12);toast.TextSize=11;toast.BackgroundTransparency=.1;toast.Active=false
+ local function notify(text)
+  notifyEpoch+=1;local e=notifyEpoch;toast.Text=text;toast.Visible=true;toast.TextTransparency=1;tween(toast,.15,{TextTransparency=0})
+  task.delay(1.7,function()if not dead and e==notifyEpoch then toast.Visible=false end end)
+ end
+ local function setOpen(value)
+  epoch+=1;local e=epoch;opened=value;reopen.Visible=not value
+  if value then window.Visible=true;scale.Scale=target*.94;window.GroupTransparency=1;tween(scale,duration,{Scale=target});tween(window,duration,{GroupTransparency=0});tween(backdrop,duration,{BackgroundTransparency=.42});cameraOpen()
+  else tween(window,duration,{GroupTransparency=1});tween(scale,duration,{Scale=target*.94});tween(backdrop,duration,{BackgroundTransparency=1});cameraClose();task.delay(duration+.03,function()if not dead and epoch==e then window.Visible=false end end)end
+ end
+ local special={};for _,v in ipairs(behavior.sliders or{})do special[v.thumb]=true end
+ for _,v in ipairs(behavior.menus or{})do special[v.button]=true end
+ for _,v in ipairs(behavior.demoPurchases or{})do special[v.button]=true end
+ for _,o in ipairs(window:GetDescendants())do
+  local motion=o:GetAttribute('UIPMotion')
+  if o:IsA('GuiButton')then
+   if motion=='hover'then
+    local s=Instance.new('UIScale');s.Name='HFHover';s.Parent=o
+    bind(o.MouseEnter,function()tween(s,.16,{Scale=1.035})end);bind(o.MouseLeave,function()tween(s,.18,{Scale=1})end)
+    bind(o.MouseButton1Down,function()tween(s,.08,{Scale=.97})end);bind(o.MouseButton1Up,function()tween(s,.16,{Scale=1.035})end)
+   end
+   bind(o.Activated,function()
+    local action=o:GetAttribute('UIPAction')
+    if action=='close'then setOpen(false)
+    elseif action=='demo'and not special[o.Name]then
+     local state=o:GetAttribute('HFDemoState')or 0;state=state==0 and 1 or(state==1 and 2 or 1);o:SetAttribute('HFDemoState',state)
+     if o:IsA('TextButton')then o.Text=state==2 and'KUŞANILDI'or'SATIN ALINDI'end
+     notify(state==2 and'DEMO • Kuşanıldı'or'DEMO • Yerel envantere eklendi')
+    end
+   end)
+  end
+  if motion=='float'then local tw=TS:Create(o,TweenInfo.new(2.1,Enum.EasingStyle.Sine,Enum.EasingDirection.InOut,-1,true),{Position=o.Position+UDim2.fromOffset(0,-4)});active[o]=tw;tw:Play()end
+  if motion=='glow'then local tw=TS:Create(o,TweenInfo.new(1.8,Enum.EasingStyle.Sine,Enum.EasingDirection.InOut,-1,true),{ImageTransparency=.55});active[o]=tw;tw:Play()end
+  if motion=='snow'then
+   local rng=Random.new(421);local flakes={};local elapsed=0
+   for i=1,32 do local f=Instance.new('Frame');f.Name='HF_Particle_'..i;f.Size=UDim2.fromOffset(rng:NextInteger(2,4),rng:NextInteger(2,4));f.BorderSizePixel=0;f.BackgroundColor3=Color3.fromRGB(245,215,255);f.ZIndex=o.ZIndex;f.Parent=o;local c=Instance.new('UICorner');c.CornerRadius=UDim.new(1,0);c.Parent=f;flakes[i]={o=f,x=rng:NextNumber(),y=rng:NextNumber(),v=rng:NextNumber(.035,.075)}end
+   bind(Run.Heartbeat,function(dt)if not opened or(not runtime and not gui.Visible)then return end;elapsed+=dt;for _,v in ipairs(flakes)do v.y=(v.y+dt*v.v)%1;v.o.BackgroundTransparency=math.clamp(.5+1-(((gui:GetAttribute('Value_VFX')or 100)/100)*(gui:GetAttribute('HFFxIntensity')or 1)),0,1);v.o.Position=UDim2.fromScale(v.x+math.sin(elapsed+v.x*6)*.01,v.y)end end)
+  end
+ end
+ for _,v in ipairs(behavior.sliders or{})do
+  local track=find(v.track);local thumb=find(v.thumb);local fill=v.fill and find(v.fill);local label=v.label and find(v.label);local dragging
+  track.Active=true;thumb.AnchorPoint=Vector2.new(.5,.5)
+  local function update(value)
+   value=math.clamp(v.min+math.floor((value-v.min)/v.step+.5)*v.step,v.min,v.max);local u=(value-v.min)/(v.max-v.min)
+   thumb.Position=UDim2.fromScale(u,.5);if fill then fill.Size=UDim2.fromScale(u,1)end
+   if label then label.Text=v.format=='percent'and(string.format('%.0f%%',value))or tostring(value)end
+   gui:SetAttribute(v.attribute,value)
+  end
+  local function position(x)if track.AbsoluteSize.X&gt;0 then update(v.min+math.clamp((x-track.AbsolutePosition.X)/track.AbsoluteSize.X,0,1)*(v.max-v.min))end end
+  local function begin(input)if input.UserInputType==Enum.UserInputType.MouseButton1 or input.UserInputType==Enum.UserInputType.Touch then dragging=input;position(input.Position.X)end end
+  bind(track.InputBegan,begin);bind(thumb.InputBegan,begin)
+  bind(UIS.InputChanged,function(input)if dragging and(input==dragging or input.UserInputType==Enum.UserInputType.MouseMovement and dragging.UserInputType==Enum.UserInputType.MouseButton1)then position(input.Position.X)end end)
+  bind(UIS.InputEnded,function(input)if input==dragging or input.UserInputType==Enum.UserInputType.MouseButton1 then dragging=nil end end);update(v.value)
+ end
+ local menus=behavior.menus or{}
+ local function menu(panel)
+  for _,v in ipairs(menus)do local page=find(v.panel);local show=v.panel==panel;page.Visible=show
+   if show and page:IsA('CanvasGroup')then page.GroupTransparency=1;tween(page,.2,{GroupTransparency=0})end
+   find(v.button):SetAttribute('HFSelected',show)
+  end;gui:SetAttribute('HFMenu',panel)
+ end
+ for _,v in ipairs(menus)do bind(find(v.button).Activated,function()menu(v.panel)end)end
+ if #menus&gt;0 then menu(behavior.defaultMenu or menus[1].panel)end
+ local states={};for _,v in ipairs(behavior.demoPurchases or{})do if v.initialOwned then states[v.id]=1 end end
+ local function refreshPurchases()
+  for _,v in ipairs(behavior.demoPurchases or{})do
+   local state=states[v.id]or 0
+   if v.label then find(v.label).Text=state==2 and'KUŞANILDI'or(state==1 and'SATIN ALINDI'or'SATIN AL')end
+   if v.image then image(find(v.image),state==2 and v.equippedAsset or(state==1 and v.ownedAsset or v.buyAsset))end
+   gui:SetAttribute('Owned_'..v.id,state&gt;0);gui:SetAttribute('Equipped_'..v.id,state==2)
+  end
+ end
+ for _,v in ipairs(behavior.demoPurchases or{})do bind(find(v.button).Activated,function()
+  if not states[v.id]then states[v.id]=1
+  elseif states[v.id]==1 then for k,s in pairs(states)do if s==2 then states[k]=1 end end;states[v.id]=2
+  else states[v.id]=1 end;refreshPurchases()
+ end)end
+ refreshPurchases()
+ bind(reopen.Activated,function()setOpen(true)end)
+ bind(viewport:GetPropertyChangedSignal('AbsoluteSize'),fit);bind(gui:GetAttributeChangedSignal('HFZoom'),fit)
+ bind(gui.Destroying,function()dead=true;clearCamera(true);for _,c in ipairs(connections)do c:Disconnect()end;for _,tw in pairs(active)do tw:Cancel()end end)
+ if runtime then gui.Enabled=true end;fit();setOpen(not runtime or behavior.startOpen~=false)
+ return{open=setOpen,notify=notify}
+end
+return M
+
+end)()
+local CheckStyle=(function()
+-- Adapted from the supplied Check-UI design specification; no screenshot cutouts.
+local M={}
+M.Palette={canvas={59,88,102},card={26,44,52},border={24,30,34},highlight={75,125,145},white={255,255,255},muted={225,235,245}}
+M.Themes={close={{255,125,175},{255,20,40},{115,0,16}},magenta={{255,20,150},{225,0,25},{125,0,18}},cyan={{0,205,255},{0,130,245},{0,50,110}},silver={{255,255,255},{215,222,232},{90,100,112}},purple={{160,0,255},{96,0,200},{80,0,120}},lime={{180,255,25},{105,225,0},{15,120,15}},amber={{255,208,0},{255,140,0},{153,76,0}},red={{255,32,80},{208,0,32},{112,0,16}}}
+M.Icons={settings='rbxassetid://75107759162473',info='rbxassetid://110199384922279',library='rbxassetid://88694661500877'}
+function M.color(rgb)return Color3.fromRGB(rgb[1],rgb[2],rgb[3])end
+function M.make(class,parent,props)
+ local o=Instance.new(class);if o:IsA('GuiObject')then o.BorderSizePixel=0 end
+ for k,v in pairs(props or{})do o[k]=v end
+ if o:IsA('TextLabel')or o:IsA('TextButton')or o:IsA('TextBox')then
+  o.Font=Enum.Font.GothamBlack;o.TextStrokeTransparency=1
+  local st=Instance.new('UIStroke');st.Name='TextOutline';st.Color=Color3.fromRGB(0,0,0);st.Thickness=o.TextSize&gt;=24 and 2.8 or 1.5;st.Parent=o
+ end
+ o.Parent=parent;return o
+end
+function M.stroke(o,color,thick,trans)
+ return M.make('UIStroke',o,{Name='Outline',Color=color or M.color(M.Palette.border),Thickness=thick or 3,Transparency=trans or 0,ApplyStrokeMode=Enum.ApplyStrokeMode.Border})
+end
+function M.gradient(o,theme)
+ local t=M.Themes[theme]or M.Themes.cyan
+ return M.make('UIGradient',o,{Name='FaceGradient',Color=ColorSequence.new(M.color(t[1]),M.color(t[2])),Rotation=90})
+end
+function M.checker(o,button)
+ local image=M.make('ImageLabel',o,{Name='Checkerboard',Size=UDim2.fromScale(1,1),BackgroundTransparency=1,Image='rbxassetid://385956923',ScaleType=Enum.ScaleType.Tile,TileSize=UDim2.fromOffset(button and 19 or 26,button and 19 or 26),ImageColor3=Color3.new(0,0,0),ZIndex=o.ZIndex+1})
+ local seq=button and NumberSequence.new({NumberSequenceKeypoint.new(0,.91),NumberSequenceKeypoint.new(1,.62)})or NumberSequence.new({NumberSequenceKeypoint.new(0,1),NumberSequenceKeypoint.new(.3,.82),NumberSequenceKeypoint.new(.7,.35),NumberSequenceKeypoint.new(1,.1)})
+ M.make('UIGradient',image,{Name='DamierFade',Rotation=90,Transparency=seq});return image
+end
+function M.label(parent,value,pos,size,fontSize,color)
+ return M.make('TextLabel',parent,{Text=value,TextSize=fontSize or 14,TextColor3=color or M.color(M.Palette.white),BackgroundTransparency=1,TextWrapped=true,TextXAlignment=Enum.TextXAlignment.Left,Position=pos,Size=size,ZIndex=parent.ZIndex+3})
+end
+function M.recess(o)
+ o.BackgroundColor3=M.color(M.Palette.card);o.BackgroundTransparency=0
+ M.stroke(o,Color3.fromRGB(8,17,22),2.8)
+ local h=M.make('Frame',o,{Name='InnerHighlight',Size=UDim2.new(1,-4,1,-4),Position=UDim2.fromOffset(2,2),BackgroundTransparency=1,ZIndex=o.ZIndex+1});M.stroke(h,M.color(M.Palette.highlight),1.2,.4)
+end
+function M.button(parent,title,x,y,w,h,bind,callback,theme,icon)
+ local t=M.Themes[theme or'cyan']or M.Themes.cyan
+ local b=M.make('ImageButton',parent,{Name=title:gsub('[^%w]','_'),Position=UDim2.fromOffset(x+w/2,y+h/2),Size=UDim2.fromOffset(w,h),AnchorPoint=Vector2.new(.5,.5),BackgroundColor3=Color3.new(1,1,1),AutoButtonColor=false,ClipsDescendants=true,ZIndex=parent.ZIndex+5})
+ M.stroke(b,Color3.fromRGB(12,20,26),3);M.gradient(b,theme or'cyan');M.checker(b,true)
+ M.make('Frame',b,{Name='BottomBevel',Position=UDim2.new(0,0,1,-4),Size=UDim2.new(1,0,0,4),BackgroundColor3=M.color(t[3]),ZIndex=b.ZIndex+2})
+ for i,trans in ipairs({.25,.45,.8})do local f=M.make('Frame',b,{Name='InnerHighlight'..i,Size=UDim2.new(1,-i*2,1,-i*2),Position=UDim2.fromScale(.5,.5),AnchorPoint=Vector2.new(.5,.5),BackgroundTransparency=1,ZIndex=b.ZIndex+2});M.stroke(f,Color3.new(1,1,1),1,trans)end
+ local label=M.label(b,title,UDim2.new(icon and .2 or 0,0,0,-1),UDim2.new(icon and .78 or 1,0,1,0),h&gt;=45 and 19 or 14);label.Name='Label';label.TextOutline.Thickness=h&gt;=40 and 3 or 2;label.TextXAlignment=Enum.TextXAlignment.Center;label.ZIndex=b.ZIndex+3
+ if icon then M.make('ImageLabel',b,{Name='Icon',Image=icon,ScaleType=Enum.ScaleType.Fit,BackgroundTransparency=1,Position=UDim2.fromScale(.04,.16),Size=UDim2.fromScale(.14,.68),ZIndex=b.ZIndex+3})end
+ local s=M.make('UIScale',b,{Name='ButtonScale',Scale=1});local tw
+ local function animate(value,t)
+  if tw then tw:Cancel()end;tw=game:GetService('TweenService'):Create(s,TweenInfo.new(t,Enum.EasingStyle.Quad,Enum.EasingDirection.Out),{Scale=value});tw:Play()
+ end
+ bind(b.MouseEnter,function()animate(1.06,.08)end);bind(b.MouseLeave,function()animate(1,.08)end);bind(b.MouseButton1Down,function()animate(.94,.05)end);bind(b.MouseButton1Up,function()animate(1.06,.12)end)
+ bind(b.Destroying,function()if tw then tw:Cancel()end end)
+ if callback then bind(b.Activated,callback)end
+ return b
+end
+function M.header(parent,bind,onClose)
+ local h=M.make('Frame',parent,{Name='Header',Size=UDim2.new(1,0,0,60),BackgroundColor3=Color3.new(1,1,1),ZIndex=2});M.gradient(h,'magenta');M.checker(h,false)
+ M.make('Frame',h,{Name='DivDark',Position=UDim2.new(0,0,1,-6),Size=UDim2.new(1,0,0,3),BackgroundColor3=Color3.fromRGB(125,0,18),ZIndex=5})
+ M.make('Frame',h,{Name='DivBlack',Position=UDim2.new(0,0,1,-3),Size=UDim2.new(1,0,0,3),BackgroundColor3=Color3.new(0,0,0),ZIndex=5})
+ M.make('Frame',h,{Name='TopHighlight',Size=UDim2.new(1,0,0,2),BackgroundColor3=Color3.fromRGB(255,200,225),ZIndex=5})
+ local title=M.label(h,'HEXFORGE UI',UDim2.fromOffset(18,0),UDim2.fromOffset(510,54),34);title.Name='Title';title.TextOutline.Thickness=3.2
+ local x=M.button(h,'X',943,9,38,38,bind,onClose,'close');x.Name='CloseButton';x.Label.TextSize=29;x.Label.TextOutline.Thickness=3
+ return h
+end
+function M.fit(hostWidth,hostHeight)
+ local available=math.min((hostWidth-24)/1000,(hostHeight-24)/680)
+ -- The skill's lower clamp is relaxed when it would overflow a narrow Studio viewport.
+ return math.max(.05,math.min(available,math.clamp(math.min(hostWidth/1050,hostHeight/620),.52,1.18)))
+end
+return M
+
+end)()
+local Inspector=(function()
+-- Pure data inspection, not native rendering or a device simulator.
+local M={}
+M.devices={{name='Masaüstü',width=1920,height=1080},{name='Tablet',width=1024,height=768},{name='Telefon',width=390,height=844}}
+function M.deviceFit(index,landscape,w,h)
+ local d=assert(M.devices[index],'Cihaz seçimi yanlış');local dw,dh=d.width,d.height
+ if landscape then dw,dh=dh,dw end
+ local factor=math.min(w/dw,h/dh)
+ return math.max(1,math.floor(dw*factor)),math.max(1,math.floor(dh*factor)),dw,dh
+end
+function M.scan(data)
+ local r={nodes={},warnings={},assets=#data.assets,scripts=#(data.scripts or{}),motions=0,controls=0,skippedLayouts=0,staticBounds=0}
+ local gui={Frame=true,CanvasGroup=true,ImageLabel=true,ImageButton=true,TextLabel=true,TextButton=true,ScrollingFrame=true}
+ local function visit(n,pw,ph,parentName,depth,skip)
+  local p=n.props or{};local size=p.Size or{0,100,0,100};local position=p.Position or{0,0,0,0};local anchor=p.AnchorPoint or{0,0}
+  local w=size[1]*pw+size[2];local h=size[3]*ph+size[4];local x=position[1]*pw+position[2]-anchor[1]*w;local y=position[3]*ph+position[4]-anchor[2]*h
+  if depth==0 then w=data.designSize[1];h=data.designSize[2];x=0;y=0 end
+  local row={measurable=gui[n.class]==true,name=n.name,class=n.class,depth=depth,asset=n.asset,action=n.action,motion=n.motion,width=w,height=h,x=x,y=y}
+  table.insert(r.nodes,row);if n.motion then r.motions+=1 end
+  if gui[n.class]and depth&gt;0 and not skip then
+   r.staticBounds+=1
+   if x&lt;-.5 or y&lt;-.5 or x+w&gt;pw+.5 or y+h&gt;ph+.5 then table.insert(r.warnings,n.name..' → '..parentName..' sınırı dışında; efekt/scroll amacıyla kasıtlı olabilir.')end
+  end
+  local layout=false
+  for _,c in ipairs(n.children or{})do if c.class=='UIListLayout'or c.class=='UIGridLayout'then layout=true end end
+  local auto=p.AutomaticSize and p.AutomaticSize~='None'
+  if layout or auto then r.skippedLayouts+=1 end
+  for _,c in ipairs(n.children or{})do visit(c,w,h,n.name,depth+1,skip or layout or auto or n.class=='ScrollingFrame')end
+ end
+ visit(data.tree,data.designSize[1],data.designSize[2],'Root',0,false)
+ local b=data.behavior or{};r.controls=#(b.sliders or{})+#(b.menus or{})+#(b.demoPurchases or{})
+ r.text=string.format('%s\n%d katman • %d PNG • %d kod • %d etkileşim\nTasarım: %d × %d\n\nSTATİK KONTROL (native test değil)\n%d geometri incelendi; %d layout/otomatik boyut alanı atlandı.\n',data.title,#r.nodes,r.assets,r.scripts,r.controls,data.designSize[1],data.designSize[2],r.staticBounds,r.skippedLayouts)
+ if #r.warnings==0 then r.text..='Hesaplanabilen sınırlarda taşma uyarısı yok.\n'else r.text..=table.concat(r.warnings,'\n')..'\n'end
+ r.text..='\nMetin taşması, font, döndürme, UIAspectRatioConstraint, native layout, asset moderasyonu ve input sonucu burada doğrulanmaz. Eksik/bozuk paket dosyaları yüklemede Schema ve CRC ile ayrıca reddedilir.'
+ return r
+end
+return M
+
+end)()
+local RuntimeSource=[=[local Motion=(function()
+local M={}
+function M.mount(gui,refs)
+ local TS=game:GetService('TweenService');local UIS=game:GetService('UserInputService');local Run=game:GetService('RunService');local HS=game:GetService('HttpService')
+ local runtime=gui:IsA('ScreenGui');local viewport=gui:WaitForChild('Viewport');local window=viewport:WaitForChild('Window');local scale=window:WaitForChild('ResponsiveScale');local backdrop=viewport:WaitForChild('Backdrop');local reopen=viewport:WaitForChild('Reopen');local toast=viewport:WaitForChild('Toast')
+ local behavior=HS:JSONDecode(gui:GetAttribute('HFBehavior')or'{}');local duration=behavior.duration or .28
+ if not refs then local map=gui:FindFirstChild('AssetMap');refs=map and HS:JSONDecode(map.Value)or{} end
+ local connections={};local active={};local dead=false;local opened=false;local target=1;local epoch=0;local notifyEpoch=0
+ local function bind(signal,fn)local c=signal:Connect(fn);table.insert(connections,c);return c end
+ local function tween(o,t,p)
+  if active[o]then active[o]:Cancel()end
+  local tw=TS:Create(o,TweenInfo.new(t/(gui:GetAttribute('HFSpeed')or 1),Enum.EasingStyle.Quint,Enum.EasingDirection.Out),p);active[o]=tw;tw:Play();return tw
+ end
+ local function find(n)return assert(window:FindFirstChild(n,true),'Etkileşim nesnesi bulunamadı: '..tostring(n))end
+ local function image(o,key)local v=refs[key];if v then if typeof(v)=='Content'then o.ImageContent=v else o.Image=v end end end
+ local camera,blur,proxy,fovConnection,baseFov,lastApplied,ownsFov
+ local function clearCamera(restore)
+  if proxy and active[proxy]then active[proxy]:Cancel();active[proxy]=nil end
+  if fovConnection then fovConnection:Disconnect();fovConnection=nil end
+  if restore and camera and ownsFov and math.abs(camera.FieldOfView-lastApplied)&lt;.05 then camera.FieldOfView=baseFov end
+  if proxy then proxy:Destroy();proxy=nil end;if blur then blur:Destroy();blur=nil end;camera=nil;ownsFov=false
+ end
+ local function cameraOpen()
+  if not runtime then return end
+  clearCamera(true);camera=workspace.CurrentCamera;if not camera then return end
+  baseFov=camera.FieldOfView;lastApplied=baseFov;ownsFov=true
+  blur=Instance.new('BlurEffect');blur.Name='HF_Blur_'..gui.Name;blur.Size=0;blur.Parent=camera
+  proxy=Instance.new('NumberValue');proxy.Value=baseFov
+  fovConnection=proxy.Changed:Connect(function(value)
+   if dead or not camera or not ownsFov then return end
+   if workspace.CurrentCamera~=camera or math.abs(camera.FieldOfView-lastApplied)&gt;.05 then ownsFov=false;return end
+   lastApplied=value;camera.FieldOfView=value
+  end)
+  tween(blur,duration,{Size=behavior.blur or 12});tween(proxy,duration,{Value=math.clamp(baseFov+(behavior.fovDelta or 5),1,120)})
+ end
+ local function cameraClose()
+  if not camera then return end
+  if blur then tween(blur,duration,{Size=0})end
+  if ownsFov and math.abs(camera.FieldOfView-lastApplied)&lt;.05 then tween(proxy,duration,{Value=baseFov})else ownsFov=false end
+  local old=proxy;task.delay(duration+.03,function()if not dead and not opened and proxy==old then clearCamera(true)end end)
+ end
+ local function fit()
+  target=math.max(.05,math.min((viewport.AbsoluteSize.X-24)/gui:GetAttribute('DesignWidth'),(viewport.AbsoluteSize.Y-24)/gui:GetAttribute('DesignHeight'),1.12))*(gui:GetAttribute('HFZoom')or 1)
+  if opened then tween(scale,.16,{Scale=target})end
+ end
+ toast.Size=UDim2.fromOffset(250,34);toast.AnchorPoint=Vector2.new(1,0);toast.Position=UDim2.new(1,-12,0,12);toast.TextSize=11;toast.BackgroundTransparency=.1;toast.Active=false
+ local function notify(text)
+  notifyEpoch+=1;local e=notifyEpoch;toast.Text=text;toast.Visible=true;toast.TextTransparency=1;tween(toast,.15,{TextTransparency=0})
+  task.delay(1.7,function()if not dead and e==notifyEpoch then toast.Visible=false end end)
+ end
+ local function setOpen(value)
+  epoch+=1;local e=epoch;opened=value;reopen.Visible=not value
+  if value then window.Visible=true;scale.Scale=target*.94;window.GroupTransparency=1;tween(scale,duration,{Scale=target});tween(window,duration,{GroupTransparency=0});tween(backdrop,duration,{BackgroundTransparency=.42});cameraOpen()
+  else tween(window,duration,{GroupTransparency=1});tween(scale,duration,{Scale=target*.94});tween(backdrop,duration,{BackgroundTransparency=1});cameraClose();task.delay(duration+.03,function()if not dead and epoch==e then window.Visible=false end end)end
+ end
+ local special={};for _,v in ipairs(behavior.sliders or{})do special[v.thumb]=true end
+ for _,v in ipairs(behavior.menus or{})do special[v.button]=true end
+ for _,v in ipairs(behavior.demoPurchases or{})do special[v.button]=true end
+ for _,o in ipairs(window:GetDescendants())do
+  local motion=o:GetAttribute('UIPMotion')
+  if o:IsA('GuiButton')then
+   if motion=='hover'then
+    local s=Instance.new('UIScale');s.Name='HFHover';s.Parent=o
+    bind(o.MouseEnter,function()tween(s,.16,{Scale=1.035})end);bind(o.MouseLeave,function()tween(s,.18,{Scale=1})end)
+    bind(o.MouseButton1Down,function()tween(s,.08,{Scale=.97})end);bind(o.MouseButton1Up,function()tween(s,.16,{Scale=1.035})end)
+   end
+   bind(o.Activated,function()
+    local action=o:GetAttribute('UIPAction')
+    if action=='close'then setOpen(false)
+    elseif action=='demo'and not special[o.Name]then
+     local state=o:GetAttribute('HFDemoState')or 0;state=state==0 and 1 or(state==1 and 2 or 1);o:SetAttribute('HFDemoState',state)
+     if o:IsA('TextButton')then o.Text=state==2 and'KUŞANILDI'or'SATIN ALINDI'end
+     notify(state==2 and'DEMO • Kuşanıldı'or'DEMO • Yerel envantere eklendi')
+    end
+   end)
+  end
+  if motion=='float'then local tw=TS:Create(o,TweenInfo.new(2.1,Enum.EasingStyle.Sine,Enum.EasingDirection.InOut,-1,true),{Position=o.Position+UDim2.fromOffset(0,-4)});active[o]=tw;tw:Play()end
+  if motion=='glow'then local tw=TS:Create(o,TweenInfo.new(1.8,Enum.EasingStyle.Sine,Enum.EasingDirection.InOut,-1,true),{ImageTransparency=.55});active[o]=tw;tw:Play()end
+  if motion=='snow'then
+   local rng=Random.new(421);local flakes={};local elapsed=0
+   for i=1,32 do local f=Instance.new('Frame');f.Name='HF_Particle_'..i;f.Size=UDim2.fromOffset(rng:NextInteger(2,4),rng:NextInteger(2,4));f.BorderSizePixel=0;f.BackgroundColor3=Color3.fromRGB(245,215,255);f.ZIndex=o.ZIndex;f.Parent=o;local c=Instance.new('UICorner');c.CornerRadius=UDim.new(1,0);c.Parent=f;flakes[i]={o=f,x=rng:NextNumber(),y=rng:NextNumber(),v=rng:NextNumber(.035,.075)}end
+   bind(Run.Heartbeat,function(dt)if not opened or(not runtime and not gui.Visible)then return end;elapsed+=dt;for _,v in ipairs(flakes)do v.y=(v.y+dt*v.v)%1;v.o.BackgroundTransparency=math.clamp(.5+1-(((gui:GetAttribute('Value_VFX')or 100)/100)*(gui:GetAttribute('HFFxIntensity')or 1)),0,1);v.o.Position=UDim2.fromScale(v.x+math.sin(elapsed+v.x*6)*.01,v.y)end end)
+  end
+ end
+ for _,v in ipairs(behavior.sliders or{})do
+  local track=find(v.track);local thumb=find(v.thumb);local fill=v.fill and find(v.fill);local label=v.label and find(v.label);local dragging
+  track.Active=true;thumb.AnchorPoint=Vector2.new(.5,.5)
+  local function update(value)
+   value=math.clamp(v.min+math.floor((value-v.min)/v.step+.5)*v.step,v.min,v.max);local u=(value-v.min)/(v.max-v.min)
+   thumb.Position=UDim2.fromScale(u,.5);if fill then fill.Size=UDim2.fromScale(u,1)end
+   if label then label.Text=v.format=='percent'and(string.format('%.0f%%',value))or tostring(value)end
+   gui:SetAttribute(v.attribute,value)
+  end
+  local function position(x)if track.AbsoluteSize.X&gt;0 then update(v.min+math.clamp((x-track.AbsolutePosition.X)/track.AbsoluteSize.X,0,1)*(v.max-v.min))end end
+  local function begin(input)if input.UserInputType==Enum.UserInputType.MouseButton1 or input.UserInputType==Enum.UserInputType.Touch then dragging=input;position(input.Position.X)end end
+  bind(track.InputBegan,begin);bind(thumb.InputBegan,begin)
+  bind(UIS.InputChanged,function(input)if dragging and(input==dragging or input.UserInputType==Enum.UserInputType.MouseMovement and dragging.UserInputType==Enum.UserInputType.MouseButton1)then position(input.Position.X)end end)
+  bind(UIS.InputEnded,function(input)if input==dragging or input.UserInputType==Enum.UserInputType.MouseButton1 then dragging=nil end end);update(v.value)
+ end
+ local menus=behavior.menus or{}
+ local function menu(panel)
+  for _,v in ipairs(menus)do local page=find(v.panel);local show=v.panel==panel;page.Visible=show
+   if show and page:IsA('CanvasGroup')then page.GroupTransparency=1;tween(page,.2,{GroupTransparency=0})end
+   find(v.button):SetAttribute('HFSelected',show)
+  end;gui:SetAttribute('HFMenu',panel)
+ end
+ for _,v in ipairs(menus)do bind(find(v.button).Activated,function()menu(v.panel)end)end
+ if #menus&gt;0 then menu(behavior.defaultMenu or menus[1].panel)end
+ local states={};for _,v in ipairs(behavior.demoPurchases or{})do if v.initialOwned then states[v.id]=1 end end
+ local function refreshPurchases()
+  for _,v in ipairs(behavior.demoPurchases or{})do
+   local state=states[v.id]or 0
+   if v.label then find(v.label).Text=state==2 and'KUŞANILDI'or(state==1 and'SATIN ALINDI'or'SATIN AL')end
+   if v.image then image(find(v.image),state==2 and v.equippedAsset or(state==1 and v.ownedAsset or v.buyAsset))end
+   gui:SetAttribute('Owned_'..v.id,state&gt;0);gui:SetAttribute('Equipped_'..v.id,state==2)
+  end
+ end
+ for _,v in ipairs(behavior.demoPurchases or{})do bind(find(v.button).Activated,function()
+  if not states[v.id]then states[v.id]=1
+  elseif states[v.id]==1 then for k,s in pairs(states)do if s==2 then states[k]=1 end end;states[v.id]=2
+  else states[v.id]=1 end;refreshPurchases()
+ end)end
+ refreshPurchases()
+ bind(reopen.Activated,function()setOpen(true)end)
+ bind(viewport:GetPropertyChangedSignal('AbsoluteSize'),fit);bind(gui:GetAttributeChangedSignal('HFZoom'),fit)
+ bind(gui.Destroying,function()dead=true;clearCamera(true);for _,c in ipairs(connections)do c:Disconnect()end;for _,tw in pairs(active)do tw:Cancel()end end)
+ if runtime then gui.Enabled=true end;fit();setOpen(not runtime or behavior.startOpen~=false)
+ return{open=setOpen,notify=notify}
+end
+return M
+
+end)()
+Motion.mount(script.Parent)
+]=]
+local Engine=(function()
+local M={}
+local HS=game:GetService('HttpService');local AS=game:GetService('AssetService');local Studio=game:GetService('StudioService')
+function M.owner(mode,id)
+ if mode=='Grup'then local n=tonumber(id);assert(n and n&gt;0 and n%1==0,'Geçerli grup ID gerekli');return {id=n,group=true,label='Grup #'..n}end
+ if mode=='Hesabım'then local n=Studio:GetUserId();assert(n&gt;0,'Studio hesabında oturum aç');return{id=n,group=false,label='Hesabım #'..n}end
+ if game.CreatorId&gt;0 then return{id=game.CreatorId,group=game.CreatorType==Enum.CreatorType.Group,label=(game.CreatorType==Enum.CreatorType.Group and 'Oyun grubu #'or'Oyun sahibi #')..game.CreatorId}end
+ local n=Studio:GetUserId();assert(n&gt;0,'Studio hesabında oturum aç');return{id=n,group=false,label='Yayımlanmamış oyun → hesabım #'..n}
+end
+function M.load(raw)
+ local zip=Binary.zip(raw);local d=HS:JSONDecode(zip:read('manifest.json'));local nodes=Schema.validate(d,zip)
+ -- Parse/verify PNG now; verify RGBA once in preview or upload preflight before ANY cloud mutation.
+ for _,a in ipairs(d.assets)do zip:read(a.png)end -- RGBA verified once during native preview, or before upload below.
+ for _,c in ipairs(d.scripts or{})do local code=zip:read(c.path);assert(not code:find('%z'),'Kod içinde NUL var')end
+ return{raw=raw,data=d,zip=zip,nodes=nodes,fingerprint=tostring(Binary.crc(raw))..':'..#raw}
+end
+local function decode(key,v,class)
+ local e=Schema.enums[key];if e then return Enum[key=='AutomaticCanvasSize'and'AutomaticSize'or key][v]end
+ local t=Schema.props[key]
+ if t=='color'then local c=Color3.fromRGB(v[1],v[2],v[3]);return class=='UIGradient'and ColorSequence.new(c,c)or c end
+ if t=='u2'then return UDim2.new(v[1],v[2],v[3],v[4])end
+ if t=='u1'then return UDim.new(v[1],v[2])end
+ if t=='v2'then return Vector2.new(v[1],v[2])end
+ if t=='rect'then return Rect.new(v[1],v[2],v[3],v[4])end
+ if key=='Transparency'and class=='UIGradient'then return NumberSequence.new(v)end
+ return v
+end
+local function object(class,parent,name,props)
+ local x=Instance.new(class);x.Name=name;if x:IsA('GuiObject')then x.BorderSizePixel=0 end
+ for k,v in pairs(props or{})do x[k]=v end
+ x.Parent=parent;return x
+end
+function M.build(pack,ids,parent,preview)
+ local d=pack.data;local gui=Instance.new(preview and'Frame'or'ScreenGui');gui.Name='UIP_'..d.id
+ local ok,err=xpcall(function()
+ if preview then gui.Size=UDim2.fromScale(1,1);gui.BackgroundTransparency=1;gui.BorderSizePixel=0
+ else gui.Enabled=false;gui.ResetOnSpawn=false;gui.IgnoreGuiInset=false;gui.ZIndexBehavior=Enum.ZIndexBehavior.Sibling;gui.DisplayOrder=20 end
+ gui:SetAttribute('HFBehavior',HS:JSONEncode(d.behavior or{}));gui:SetAttribute('NativeAcceptance','NOT_RUN_BY_AUTHOR');gui:SetAttribute('UIPackage',d.id);gui:SetAttribute('DesignWidth',d.designSize[1]);gui:SetAttribute('DesignHeight',d.designSize[2]);gui:SetAttribute('UIInstaller','Hexforge UI 1.1')
+ local viewport=object('Frame',gui,'Viewport',{Size=UDim2.fromScale(1,1),BackgroundTransparency=1})
+ object('Frame',viewport,'Backdrop',{Size=UDim2.fromScale(1,1),BackgroundColor3=Color3.fromRGB(5,9,20),BackgroundTransparency=1,BorderSizePixel=0})
+ local window=object('CanvasGroup',viewport,'Window',{Size=UDim2.fromOffset(d.designSize[1],d.designSize[2]),Position=UDim2.fromScale(.5,.5),AnchorPoint=Vector2.new(.5,.5),BackgroundTransparency=1,GroupTransparency=0,ZIndex=2})
+ object('UIScale',window,'ResponsiveScale',{Scale=1})
+ local function visit(n,p)
+  local x=Instance.new(n.class);x.Name=n.name;x.Parent=p
+  for key,v in pairs(n.props or{})do local applied,why=pcall(function()x[key]=decode(key,v,n.class)end);assert(applied,n.name..'.'..key..': '..tostring(why))end
+  if x:IsA('GuiObject')then if not(n.props or{}).BorderSizePixel then x.BorderSizePixel=0 end end
+  if n.gradient then
+   local g=n.gradient
+   if g.colors then local stops={};for _,v in ipairs(g.colors)do table.insert(stops,ColorSequenceKeypoint.new(v[1],Color3.fromRGB(v[2],v[3],v[4])))end;x.Color=ColorSequence.new(stops)end
+   if g.transparency then local stops={};for _,v in ipairs(g.transparency)do table.insert(stops,NumberSequenceKeypoint.new(v[1],v[2]))end;x.Transparency=NumberSequence.new(stops)end
+   if g.rotation then x.Rotation=g.rotation end
+  end
+  if n.imageId then x.Image='rbxassetid://'..n.imageId end
+  if n.asset then local ref=assert(ids[n.asset],'Eksik ID: '..n.asset);if typeof(ref)=='Content'then x.ImageContent=ref else x.Image=ref end end
+  if n.action then x:SetAttribute('UIPAction',n.action)end;if n.motion then x:SetAttribute('UIPMotion',n.motion)end
+  for _,c in ipairs(n.children or{})do visit(c,x)end;return x
+ end
+ local root=visit(d.tree,window);root.Size=UDim2.fromScale(1,1);root.Position=UDim2.fromOffset(0,0);root.AnchorPoint=Vector2.zero
+ local reopen=object('TextButton',viewport,'Reopen',{Size=UDim2.fromOffset(180,44),Position=UDim2.new(.5,0,1,-18),AnchorPoint=Vector2.new(.5,1),BackgroundColor3=Color3.fromRGB(36,183,170),Text='MAĞAZAYI AÇ',Font=Enum.Font.GothamBold,TextSize=14,TextColor3=Color3.new(1,1,1),Visible=false,ZIndex=30,AutoButtonColor=false});object('UICorner',reopen,'Round',{CornerRadius=UDim.new(0,12)})
+ if d.behavior and d.behavior.openAsset then
+  reopen.Text='';reopen.BackgroundColor3=Color3.fromRGB(62,15,90);local img=object('ImageLabel',reopen,'OpenArtwork',{Size=UDim2.fromScale(.8,.7),Position=UDim2.fromScale(.1,.15),BackgroundTransparency=1,ScaleType=Enum.ScaleType.Fit});local ref=ids[d.behavior.openAsset];if typeof(ref)=='Content'then img.ImageContent=ref else img.Image=ref end
+ end
+ local toast=object('TextLabel',viewport,'Toast',{Size=UDim2.new(.9,0,0,50),Position=UDim2.new(.5,0,1,60),AnchorPoint=Vector2.new(.5,1),BackgroundColor3=Color3.fromRGB(23,37,55),Text='',TextSize=13,TextWrapped=true,Font=Enum.Font.Gotham,TextColor3=Color3.new(1,1,1),Visible=false,ZIndex=40});object('UICorner',toast,'Round',{CornerRadius=UDim.new(0,12)})
+ if not preview then local s=Instance.new('LocalScript');s.Name='UI_Motion';s.Source=RuntimeSource;s.Parent=gui end
+ gui.Parent=parent
+ end,debug.traceback)
+ if not ok then gui:Destroy();error(err,0)end
+ return gui
+end
+function M.upload(pack,owner,pluginObject,manual,log,cancel,onProgress)
+ -- No upload until EVERY byte is verified, including when preview was skipped/failed.
+ if pack.zip.verified then for _,a in ipairs(pack.data.assets)do
+  for _,path in ipairs({a.png,a.rgba})do if not pack.zip.verified[path]then pack.zip:read(path)end end
+ end end
+ local ids={};local cache=pluginObject:GetSetting('UIPAssetCacheV1')or{};if type(cache)~='table'then cache={}end
+ local queue={};local completed=0
+ for _,a in ipairs(pack.data.assets)do
+  assert(not cancel(),'İşlem iptal edildi; tamamlanan asset yüklemeleri Roblox üzerinde kalır')
+  local entry=pack.zip.entries[a.rgba];local key=table.concat({owner.group and'g'or'u',owner.id,pack.data.id,a.key,a.width,a.height,entry.crc},':')
+  local cached=manual[a.key]or cache[key]
+  if cached then local n=tonumber(tostring(cached):match('(%d+)$'));assert(n and n&gt;0 and n%1==0,'Geçersiz ID: '..a.key);ids[a.key]='rbxassetid://'..string.format('%.0f',n);completed+=1;log('Önbellekten: '..a.key)
+  else table.insert(queue,{asset=a,key=key})end
+ end
+ local cursor=0;local running=0;local firstError
+ local function worker()
+  while not firstError and not cancel()do
+   cursor+=1;local row=queue[cursor];if not row then break end
+   local a=row.asset;log('Yükleniyor: '..a.key..' → '..owner.label)
+   local ok,id=pcall(Bridge.upload,pack,a,owner,function()return cancel()or firstError~=nil end,log)
+   if not ok then firstError=firstError or tostring(id);break end
+   local n=tonumber(id);if not n or n&lt;=0 then firstError='Geçersiz gerçek assetId';break end
+   ids[a.key]='rbxassetid://'..string.format('%.0f',n);cache[row.key]=n;completed+=1
+   local saved=pcall(function()pluginObject:SetSetting('UIPAssetCacheV1',cache)end)
+   log('Yüklendi: '..a.key..' → '..tostring(id));if not saved then log('Cache yazılamadı; gerçek ID: '..tostring(id))end
+   if onProgress then onProgress(completed,#pack.data.assets,a.key)end
+  end
+  running-=1
+ end
+ if task and task.spawn and #queue&gt;1 then
+  running=math.min(2,#queue);for _=1,running do task.spawn(worker)end
+  while running&gt;0 do task.wait()end
+ elseif #queue&gt;0 then running=1;worker()end
+ if firstError then error(firstError,0)end
+ assert(not cancel(),'İptal edildi; başlamış cloud işleri köprüde tamamlanabilir')
+ return ids
+end
+-- Package scripts are installed only after explicit per-package approval in Main.
+local function codeObject(pack,c,parent)
+ local x=Instance.new(c.kind);x.Name=c.name;x.Parent=parent;x.Source=pack.zip:read(c.path);return x
+end
+function M.controllerSource(pack)
+ return "local ctx={gui=script.Parent,preview=false,shared=game:GetService('ReplicatedStorage'):WaitForChild('UIP_Shared_"..pack.data.id.."')}\nlocal module=require(script.Parent:WaitForChild('"..pack.data.controller.."'))\nassert(type(module)=='table'and type(module.mount)=='function','Controller.mount gerekli')\nmodule.mount(ctx)"
+end
+function M.preview(pack,ids,parent,approved)
+ local gui=M.build(pack,ids,parent,true)
+ local ok,err=xpcall(function()
+  Motion.mount(gui,ids)
+  if approved and pack.data.controller then
+   for _,c in ipairs(pack.data.scripts or{})do if c.target=='UI'and c.kind=='ModuleScript'then codeObject(pack,c,gui)end end
+   local mod=require(gui:FindFirstChild(pack.data.controller));assert(type(mod)=='table'and type(mod.mount)=='function','Controller.mount gerekli');mod.mount({gui=gui,preview=true,shared=nil})
+  end
+ end,debug.traceback)
+ if not ok then gui:Destroy();error(err,0)end
+ return gui
+end
+function M.stage(pack,ids,owner,approved)
+ assert(#(pack.data.scripts or{})==0 or approved,'Paket kodu onaylanmadı')
+ local out={};local function add(x,svc)out[#out+1]={object=x,parent=game:GetService(svc)};return x end
+ local ok,err=xpcall(function()
+  local gui=add(M.build(pack,ids,nil,false),'StarterGui')
+  local shared=Instance.new('Folder');shared.Name='UIP_Shared_'..pack.data.id;shared:SetAttribute('UIPackage',pack.data.id);add(shared,'ReplicatedStorage')
+  local server=Instance.new('Folder');server.Name='UIP_Server_'..pack.data.id;server:SetAttribute('UIPackage',pack.data.id);add(server,'ServerScriptService')
+  local client=Instance.new('Folder');client.Name='UIP_Client_'..pack.data.id;client:SetAttribute('UIPackage',pack.data.id);out[#out+1]={object=client,parent=game:GetService('StarterPlayer'):WaitForChild('StarterPlayerScripts')}
+  for _,row in ipairs(out)do row.object:SetAttribute('AssetOwnerId',owner.id);row.object:SetAttribute('AssetOwnerType',owner.group and'Group'or'User')end
+  local map=Instance.new('StringValue');map.Name='AssetMap';map.Value=HS:JSONEncode(ids);map.Parent=shared
+  local same=map:Clone();same.Parent=gui
+  local templates=Instance.new('Folder');templates.Name='VFX';templates.Parent=shared
+  for _,f in ipairs(pack.data.vfx or{})do
+   local model=Instance.new('Model');model.Name=f.name;model.Parent=templates
+   local p=Instance.new('Part');p.Name='Origin';p.Size=Vector3.one;p.Anchored=true;p.CanCollide=false;p.CanQuery=false;p.CanTouch=false;p.Transparency=1;p.Parent=model;model.PrimaryPart=p
+   local a=Instance.new('Attachment');a.Name='FX';a.Parent=p
+   local e=Instance.new('ParticleEmitter');e.Name=f.name;e.Enabled=false;e.Texture=ids[f.texture];e.Rate=f.rate;e.Lifetime=NumberRange.new(f.lifetime[1],f.lifetime[2]);e.Speed=NumberRange.new(f.speed[1],f.speed[2]);e.Size=NumberSequence.new(f.size[1],f.size[2]);e.Color=ColorSequence.new(Color3.fromRGB(f.color[1],f.color[2],f.color[3]));e.Transparency=NumberSequence.new({NumberSequenceKeypoint.new(0,.1),NumberSequenceKeypoint.new(.7,.2),NumberSequenceKeypoint.new(1,1)});e.SpreadAngle=Vector2.new(45,45);e.LightEmission=.7;e.Drag=1;e.Parent=a
+  end
+  for _,c in ipairs(pack.data.scripts or{})do codeObject(pack,c,c.target=='UI'and gui or(c.target=='Shared'and shared or(c.target=='Server'and server or client)))end
+  if pack.data.controller then local x=Instance.new('LocalScript');x.Name='Package_Start';x.Source=M.controllerSource(pack);x.Parent=gui end
+ end,debug.traceback)
+ if not ok then for _,row in ipairs(out)do row.object:Destroy()end;error(err,0)end
+ return out
+end
+function M.canInstall(pack,replace)
+ local id=pack.data.id
+ local slots={{game:GetService('StarterGui'),'UIP_'..id},{game:GetService('ReplicatedStorage'),'UIP_Shared_'..id},{game:GetService('ServerScriptService'),'UIP_Server_'..id},{game:GetService('StarterPlayer'):WaitForChild('StarterPlayerScripts'),'UIP_Client_'..id}}
+ for _,slot in ipairs(slots)do local old=slot[1]:FindFirstChild(slot[2]);if old then assert(replace,'Paket kurulu; Gelişmiş &gt; güncelle seçeneğini aç');assert(old:GetAttribute('UIPackage')==id,'Farklı içerik korunuyor: '..old.Name)end end
+end
+function M.commit(rows,replace,packId)
+ local existing={}
+ for _,row in ipairs(rows)do
+  local old=row.parent:FindFirstChild(row.object.Name)
+  if old then assert(replace,'Aynı paket mevcut: Güncelle seçeneğini aç');assert(old:GetAttribute('UIPackage')==packId,'Aynı adlı farklı içerik korunuyor: '..old.Name);table.insert(existing,{object=old,parent=row.parent})end
+ end
+ local backup=Instance.new('Folder');backup.Name='UIP_Pro_Backup_'..os.time();backup.Parent=game:GetService('ServerStorage')
+ local ok,err=xpcall(function()
+  for _,row in ipairs(existing)do row.object.Parent=backup end
+  for _,row in ipairs(rows)do row.object.Parent=row.parent end
+ end,debug.traceback)
+ if not ok then
+  for _,row in ipairs(rows)do row.object:Destroy()end
+  for _,row in ipairs(existing)do row.object.Parent=row.parent end
+  backup:Destroy();error(err,0)
+ end
+ return{created=rows,previous=existing,backup=backup}
+end
+function M.undo(record)
+ for _,r in ipairs(record.created)do assert(r.object.Parent==r.parent,'Kurulan içerik taşındı; otomatik geri alma durdu')end
+ for _,r in ipairs(record.previous)do assert(r.object.Parent==record.backup,'Yedek taşındı; otomatik geri alma durdu')end
+ for _,r in ipairs(record.created)do r.object:Destroy()end
+ for _,r in ipairs(record.previous)do r.object.Parent=r.parent end
+ if #record.backup:GetChildren()==0 then record.backup:Destroy()end
+end
+return M
+
+end)()
+assert(plugin,'Hexforge UI yerel plugin olarak kurulmalı.')
+local HS=game:GetService('HttpService');local Studio=game:GetService('StudioService');local Run=game:GetService('RunService');local AS=game:GetService('AssetService');local UIS=game:GetService('UserInputService');local TS=game:GetService('TweenService')
+local toolbar=plugin:CreateToolbar('HEXFORGE UI');local toggle=toolbar:CreateButton('HexforgeUI','Check-UI Workshop 1.1','rbxassetid://133261037814108','HEXFORGE');toggle.ClickableWhenViewportHidden=true
+local dead=false;local busy=false;local canceled=false;local images={};local connections={};local pack,previewGui,lastInstall;local approved=false;local previewPreferences={HFZoom=1,HFSpeed=1,HFFxIntensity=1};local uploadOwner=plugin:GetSetting('HexforgeOwner')or{mode='Auto'}
+local function bind(signal,fn)local c=signal:Connect(fn);table.insert(connections,c);return c end
+local make=CheckStyle.make
+local function round(o,r)return make('UICorner',o,{CornerRadius=UDim.new(0,r or 4)})end
+local C={bg=CheckStyle.color(CheckStyle.Palette.canvas),card=CheckStyle.color(CheckStyle.Palette.card),accent=Color3.fromRGB(180,255,25),muted=CheckStyle.color(CheckStyle.Palette.muted),text=Color3.new(1,1,1)}
+local screen=make('ScreenGui',nil,{Name='Hexforge_Workshop',Enabled=false,ResetOnSpawn=false,IgnoreGuiInset=false,DisplayOrder=10000,ZIndexBehavior=Enum.ZIndexBehavior.Sibling})
+local fallback
+local coreOk=pcall(function()screen.Parent=game:GetService('CoreGui')end)
+if not coreOk then screen:Destroy();screen=nil;fallback=plugin:CreateDockWidgetPluginGui('Hexforge_Fallback',DockWidgetPluginGuiInfo.new(Enum.InitialDockState.Float,false,true,1040,720,720,480));fallback.Title='HEXFORGE UI — izin yedeği';fallback.Enabled=false end
+local host=screen or fallback
+local shell=make('CanvasGroup',host,{Name='Workshop',Size=UDim2.fromOffset(1000,680),Position=UDim2.fromScale(.5,.5),AnchorPoint=Vector2.new(.5,.5),BackgroundTransparency=1,GroupTransparency=1});local shellScale=make('UIScale',shell,{Scale=1})
+local function fit()local sz=host.AbsoluteSize;shellScale.Scale=CheckStyle.fit(sz.X,sz.Y)end
+if screen then bind(screen:GetPropertyChangedSignal('AbsoluteSize'),fit)else bind(fallback:GetPropertyChangedSignal('AbsoluteSize'),fit)end
+local showEpoch=0
+local function show(value)
+ showEpoch+=1;local epoch=showEpoch;toggle:SetActive(value)
+ if previewGui then previewGui.Visible=value end
+ if value then host.Enabled=true;shell.Position=UDim2.fromScale(.5,.5);fit();shell.GroupTransparency=1;TS:Create(shell,TweenInfo.new(.22,Enum.EasingStyle.Quint),{GroupTransparency=0}):Play()
+ else TS:Create(shell,TweenInfo.new(.18,Enum.EasingStyle.Quint),{GroupTransparency=1}):Play();task.delay(.19,function()if not dead and showEpoch==epoch then host.Enabled=false end end)end
+end
+bind(toggle.Click,function()show(not host.Enabled)end)
+local function localRefs(package,bag)
+ local refs={}
+ for _,a in ipairs(package.data.assets)do
+  assert(not dead and not canceled,'İptal');local im=AS:CreateEditableImage({Size=Vector2.new(a.width,a.height)});assert(im,'EditableImage izni/belleği kullanılamıyor')
+  table.insert(bag,im);im:WritePixelsBuffer(Vector2.zero,Vector2.new(a.width,a.height),buffer.fromstring(package.zip:read(a.rgba)));refs[a.key]=Content.fromObject(im);task.wait()
+ end;return refs
+end
+local function text(parent,value,pos,size,color)return CheckStyle.label(parent,value,pos,size,14,color)end
+local labels={nav_package='PAKET',nav_library='KÜTÜPHANE',nav_settings='AYARLAR',open_zip='ZIP AÇ',publish_label='OYUNA YÜKLE',save_label='KAYDET',delete_label='SİL',connect_label='BAĞLAN',forget_label='ANAHTARI UNUT',close_label='KAPAT',review_label='KODLARI İNCELE',approve_label='KODU ONAYLIYORUM',cancel_label='İPTAL',hide_label='EDIT UI GİZLE',undo_label='GERİ AL',owner_label='GÖRSEL SAHİBİ'}
+local function button(parent,key,x,y,w,h,fn,icon)
+ local theme=({publish_label='lime',save_label='lime',delete_label='red',cancel_label='red',approve_label='lime',connect_label='lime',nav_library='purple',nav_settings='silver',undo_label='amber',hide_label='silver'})[key]or'cyan'
+ return CheckStyle.button(parent,labels[key]or key,x,y,w,h,bind,fn,theme,icon=='settings'and CheckStyle.Icons.settings or nil)
+end
+shell.BackgroundTransparency=0;shell.BackgroundColor3=C.bg;CheckStyle.stroke(shell,nil,3.5);round(shell,4)
+local header=CheckStyle.header(shell,bind,function()show(false)end)
+local pageTitle=text(shell,'PAKET YÖNETİCİSİ',UDim2.fromOffset(278,83),UDim2.fromOffset(490,37));pageTitle.TextSize=26
+local apiBadge=text(shell,'YEREL API • KAPALI',UDim2.fromOffset(755,87),UDim2.fromOffset(210,30),C.muted);apiBadge.TextSize=12
+local sidebar=make('Frame',shell,{Position=UDim2.fromOffset(18,125),Size=UDim2.fromOffset(234,449),BackgroundColor3=C.card});CheckStyle.recess(sidebar)
+text(shell,'ÇALIŞMA ALANI',UDim2.fromOffset(33,130),UDim2.fromOffset(208,27)).TextSize=14
+local drag=make('Frame',shell,{Position=UDim2.fromOffset(18,0),Size=UDim2.fromOffset(900,54),BackgroundTransparency=1,Active=true,ZIndex=6})
+local dragging,dragStart,origin
+bind(drag.InputBegan,function(input)if input.UserInputType==Enum.UserInputType.MouseButton1 or input.UserInputType==Enum.UserInputType.Touch then dragging=input;dragStart=input.Position;origin=shell.Position end end)
+bind(UIS.InputChanged,function(input)if dragging and(input==dragging or input.UserInputType==Enum.UserInputType.MouseMovement)then local d=(input.Position-dragStart);shell.Position=origin+UDim2.fromOffset(d.X,d.Y)end end)
+bind(UIS.InputEnded,function(input)if input==dragging or input.UserInputType==Enum.UserInputType.MouseButton1 then dragging=nil end end)
+local status=text(shell,'Hazırlanıyor…',UDim2.fromOffset(278,607),UDim2.fromOffset(650,32),C.muted)
+local track=make('Frame',shell,{Position=UDim2.fromOffset(278,646),Size=UDim2.fromOffset(650,3),BackgroundColor3=C.card});local progress=make('Frame',track,{Size=UDim2.fromScale(0,1),BackgroundColor3=C.accent})
+local function log(value,fraction)if dead then return end;apiBadge.Text=Bridge.ready and'YEREL API • BAĞLI'or'YEREL API • KAPALI';status.Text=tostring(value):match('[^\n]+')or'';if fraction then progress.Size=UDim2.fromScale(math.clamp(fraction,0,1),1)end end
+local function operation(fn)
+ if busy then log('Devam eden işlem bitsin veya İptal kullan.');return end;busy=true;canceled=false
+ task.spawn(function()local ok,err=xpcall(fn,debug.traceback);busy=false;if not ok then log('DURDU: '..tostring(err))end end)
+end
+local pages={};local function page(name)local p=make('CanvasGroup',shell,{Name=name,Position=UDim2.fromOffset(278,147),Size=UDim2.fromOffset(650,444),BackgroundTransparency=1,Visible=false});pages[name]=p;return p end
+local navButtons={}
+local function selectPage(name)for key,b in pairs(navButtons)do local selected=key==name;b:SetAttribute('HFSelected',selected);b.Outline.Color=selected and Color3.new(1,1,1)or Color3.fromRGB(12,20,26)end;local theme=CheckStyle.Themes[({Package='magenta',Library='purple',Settings='silver',Inspect='cyan'})[name]or'magenta'];header.FaceGradient.Color=ColorSequence.new(CheckStyle.color(theme[1]),CheckStyle.color(theme[2]));header.DivDark.BackgroundColor3=CheckStyle.color(theme[3]);pageTitle.Text=({Package='PAKET YÖNETİCİSİ',Library='KÜTÜPHANE',Settings='AYARLAR',Inspect='PAKET INCELEYICI'})[name]or name;for n,p in pairs(pages)do p.Visible=n==name;if p.Visible then p.GroupTransparency=1;TS:Create(p,TweenInfo.new(.2,Enum.EasingStyle.Quint),{GroupTransparency=0}):Play()end end end
+local packagePage=page('Package');local libraryPage=page('Library');local settingsPage=page('Settings');local inspectPage=page('Inspect');local refreshInspection;local selectedLayerOutline;local currentReport
+navButtons.Package=button(shell,'nav_package',31,169,207,48,function()selectPage('Package')end)
+navButtons.Library=button(shell,'nav_library',31,232,207,48,function()selectPage('Library')end)
+navButtons.Inspect=button(shell,'Inspect',31,295,207,48,function()selectPage('Inspect');if refreshInspection then refreshInspection()end end)
+navButtons.Settings=button(shell,'nav_settings',31,358,207,48,function()selectPage('Settings')end,'settings')
+button(shell,'cancel_label',31,452,207,42,function()canceled=true;log('İptal istendi; başlamış cloud işleri korunur.')end)
+text(shell,'CHECK-UI • 1.1\nÖnizleme / statik kontrol',UDim2.fromOffset(32,513),UDim2.fromOffset(208,47),C.muted).TextSize=12
+if fallback then text(shell,'CoreGui izni reddedildi: native çerçeveli güvenli yedek açık.',UDim2.fromOffset(279,122),UDim2.fromOffset(620,24),C.accent)end
+local previewStage=make('Frame',packagePage,{Position=UDim2.fromOffset(0,61),Size=UDim2.fromOffset(650,280),BackgroundColor3=Color3.fromRGB(12,7,19),ClipsDescendants=true});round(previewStage);CheckStyle.recess(previewStage)
+local previewHost=make('Frame',previewStage,{Name='DeviceCanvas',AnchorPoint=Vector2.new(.5,.5),Position=UDim2.fromScale(.5,.5),Size=UDim2.fromOffset(497,280),BackgroundColor3=Color3.fromRGB(17,29,36),ClipsDescendants=true})
+local deviceIndex=1;local rotated=false;local deviceLabel;local function setDevice()local w,h,dw,dh=Inspector.deviceFit(deviceIndex,rotated,650,280);previewHost.Size=UDim2.fromOffset(w,h);if deviceLabel then deviceLabel.Text=Inspector.devices[deviceIndex].name..' • '..dw..'×'..dh..' / yalnız oran önizlemesi'end end
+setDevice()
+local info=text(previewStage,'ZIP seç: katmanlı native UI burada etkileşimli açılır.',UDim2.fromOffset(20,100),UDim2.fromOffset(610,60),C.muted)
+local function disposePreview()if selectedLayerOutline then selectedLayerOutline:Destroy();selectedLayerOutline=nil end;if previewGui then previewGui:Destroy();previewGui=nil end;for _,im in ipairs(images)do im:Destroy()end;images={}end
+local function renderPreview()
+ disposePreview();assert(pack,'Önce paket aç');local refs=localRefs(pack,images);previewGui=Engine.preview(pack,refs,previewHost,approved);for k,v in pairs(previewPreferences)do previewGui:SetAttribute(k,v)end;info.Visible=false;if refreshInspection then refreshInspection()end;log(pack.data.title..' • '..pack.nodes..' katman • '..#pack.data.assets..' görsel',1)
+end
+local function loadPackage(raw)
+ local candidate=Engine.load(raw);disposePreview();pack=candidate;approved=false;currentReport=Inspector.scan(candidate.data);renderPreview()
+end
+deviceLabel=text(packagePage,'',UDim2.fromOffset(0,344),UDim2.fromOffset(290,31),C.muted);deviceLabel.TextSize=10
+button(packagePage,'CİHAZ',307,347,108,27,function()deviceIndex=deviceIndex%#Inspector.devices+1;setDevice()end)
+button(packagePage,'DÖNDÜR',428,347,108,27,function()rotated=not rotated;setDevice()end)
+button(packagePage,'YENİDEN AÇ',549,347,101,27,function()operation(renderPreview)end)
+setDevice()
+button(packagePage,'open_zip',0,0,200,45,function()operation(function()local file=Studio:PromptImportFileAsync({'zip'});if file then loadPackage(file:GetBinaryContents())end end)end,'import')
+local adapter={};function adapter:get(k)return plugin:GetSetting(k)end;function adapter:set(k,v)plugin:SetSetting(k,v)end;function adapter:uuid()return HS:GenerateGUID(false)end
+local library=Library.new(adapter);local refreshLibrary
+local function input(parent,placeholder,x,y,w,h)
+ local o=make('TextBox',parent,{Position=UDim2.fromOffset(x,y),Size=UDim2.fromOffset(w,h),BackgroundColor3=C.card,TextColor3=C.text,TextSize=13,Font=Enum.Font.Gotham,PlaceholderText=placeholder,PlaceholderColor3=C.muted,Text='',ClearTextOnFocus=false});round(o);return o
+end
+local saveName=input(packagePage,'Kaydetmek için isim…',218,0,225,43)
+local replace=false;local replaceButton=make('TextButton',settingsPage,{Position=UDim2.fromOffset(0,348),Size=UDim2.fromOffset(650,30),BackgroundTransparency=1,Text='[ ] Aynı adlı kayıt ve kurulu paketi güncelle',TextSize=12,Font=Enum.Font.Gotham,TextColor3=C.muted,TextXAlignment=Enum.TextXAlignment.Left});bind(replaceButton.Activated,function()replace=not replace;replaceButton.Text=(replace and'[✓] 'or'[ ] ')..'Aynı adlı kayıt ve kurulu paketi güncelle'end)
+button(packagePage,'save_label',458,0,192,45,function()operation(function()assert(pack,'Paket yok');library:save(saveName.Text,pack.raw,{title=pack.data.title,packageId=pack.data.id,assetCount=#pack.data.assets},replace);log('İsimli kayıt kaydedildi. Orijinal ZIP artık gerekli değil.');if refreshLibrary then refreshLibrary()end end)end,'library')
+local function owner()if uploadOwner.mode=='Grup'then return Engine.owner('Grup',uploadOwner.id)end;return Engine.owner(uploadOwner.mode)end
+button(packagePage,'publish_label',0,389,210,49,function()operation(function()
+ assert(pack,'Paket yok');assert(#pack.data.assets==0 or Bridge.ready,'Önce Ayarlar → API bağlantısı');assert(not Run:IsRunning(),'Kurulum için Play’i durdur');assert(#(pack.data.scripts or{})==0 or approved,'Paket kodunu önce inceleyip açıkça onayla')
+ local package=pack;local target=owner();Engine.canInstall(package,replace);log('Kalıcı görseller yükleniyor → '..target.label,0)
+ local ids=Engine.upload(package,target,plugin,{},log,function()return canceled or dead end,function(done,total,key)log(done..'/'..total..' • '..key,done/math.max(total,1))end)
+ assert(not dead and not canceled and not Run:IsRunning(),'Commit öncesi iptal');local staged=Engine.stage(package,ids,target,approved)
+ local ok,result=pcall(Engine.commit,staged,replace,package.data.id);if not ok then for _,r in ipairs(staged)do r.object:Destroy()end;error(result,0)end;lastInstall=result
+ log('Kuruldu. Edit’te kapalı; Play’de kendi açma düğmesi var.',1)
+end)end,'publish')
+button(packagePage,'undo_label',230,389,195,49,function()operation(function()assert(lastInstall,'Geri alınacak kurulum yok');Engine.undo(lastInstall);lastInstall=nil;log('Son kurulum geri alındı.')end)end)
+button(packagePage,'hide_label',445,389,205,49,function()operation(function()
+ assert(not Run:IsRunning(),'Edit gizleme için önce Play’i durdur');local count=0;for _,gui in ipairs(game:GetService('StarterGui'):GetChildren())do if gui:IsA('ScreenGui')and gui:GetAttribute('UIPackage')and tostring(gui:GetAttribute('UIInstaller')or''):match('^UI Studio')then
+  gui.Enabled=false;gui:SetAttribute('HFEditHidden',true)
+  local boot=gui:FindFirstChild('HF_EditMigration');if not boot then boot=Instance.new('LocalScript');boot.Name='HF_EditMigration';boot.Source="script.Parent.Enabled=true";boot.Parent=gui end;count+=1
+ end end;log(count..' eski UI edit modunda gizlendi; diğer GUI’lere dokunulmadı.')
+end)end)
+-- ZIP code is inert until the user reviews and explicitly approves this package.
+local reviewPanel=make('Frame',shell,{Position=UDim2.fromOffset(270,142),Size=UDim2.fromOffset(665,454),BackgroundColor3=C.bg,Visible=false,ZIndex=90});round(reviewPanel)
+local codeScroll=make('ScrollingFrame',reviewPanel,{Position=UDim2.fromOffset(12,12),Size=UDim2.fromOffset(641,365),BackgroundColor3=C.card,CanvasSize=UDim2.new(),AutomaticCanvasSize=Enum.AutomaticSize.XY,ScrollBarThickness=5,ClipsDescendants=true,ZIndex=91});local code=input(codeScroll,'',0,0,620,0);code.AutomaticSize=Enum.AutomaticSize.XY;code.TextWrapped=false;code.MultiLine=true;code.TextEditable=false;code.TextXAlignment=Enum.TextXAlignment.Left;code.TextYAlignment=Enum.TextYAlignment.Top;code.TextSize=11;code.ZIndex=91
+local reviewPack
+button(settingsPage,'review_label',0,388,245,45,function()
+ if not pack then log('Önce paket aç.');return end;reviewPack=pack;local out={'UYARI: Onaylanan kod Studio’da ve/veya oyunda çalışabilir. Güvenmediğin paketi onaylama.'}
+ for _,c in ipairs(pack.data.scripts or{})do table.insert(out,'\n--- '..c.target..' / '..c.kind..' / '..c.name..' ---\n'..pack.zip:read(c.path))end;code.Text=table.concat(out,'\n');reviewPanel.Visible=true
+end)
+button(reviewPanel,'approve_label',12,390,305,45,function()if pack==reviewPack then approved=true;reviewPanel.Visible=false;log('Yalnız bu paketin kodları onaylandı.')else log('Paket değişti; yeniden incele.')end end).ZIndex=92
+button(reviewPanel,'close_label',340,390,305,45,function()reviewPanel.Visible=false end).ZIndex=92
+local search=input(libraryPage,'Kayıt ara…',0,0,650,38)
+local list=make('ScrollingFrame',libraryPage,{Position=UDim2.fromOffset(0,52),Size=UDim2.fromOffset(650,392),BackgroundTransparency=1,ScrollBarThickness=4,ScrollBarImageColor3=C.accent,CanvasSize=UDim2.new()})
+refreshLibrary=function()
+ for _,o in ipairs(list:GetChildren())do o:Destroy()end;local rows=library:list(search.Text)
+ for i,row in ipairs(rows)do
+  local y=(i-1)*83;text(list,row.name..'\n'..row.title,UDim2.fromOffset(8,y+8),UDim2.fromOffset(310,55))
+  button(list,'open_zip',335,y+12,145,43,function()operation(function()loadPackage(library:load(row.id));saveName.Text=row.name;selectPage('Package')end)end)
+  local armed=false;local del=button(list,'delete_label',493,y+12,145,43,function()
+   if not armed then armed=true;log('Yerel kaydı silmek için aynı Sil düğmesine tekrar bas. Cloud silinmez.');task.delay(3,function()armed=false end);return end
+   operation(function()library:delete(row.id);refreshLibrary();log('Yalnız yerel kütüphane kaydı silindi.')end)
+  end)
+ end;list.CanvasSize=UDim2.fromOffset(0,#rows*83)
+end
+bind(search:GetPropertyChangedSignal('Text'),function()local ok,e=pcall(refreshLibrary);if not ok then log(e)end end)
+text(settingsPage,'API ANAHTARI',UDim2.fromOffset(0,0),UDim2.fromOffset(260,28)).TextSize=22;text(settingsPage,'Windows DPAPI / isteğe bağlı kasa',UDim2.fromOffset(300,4),UDim2.fromOffset(350,20),C.muted).TextSize=12
+local key=input(settingsPage,'',0,40,400,42);key.TextTransparency=1;key.TextOutline.Transparency=1
+local bullets=text(settingsPage,'Anahtarı buraya yapıştır…',UDim2.fromOffset(14,40),UDim2.fromOffset(370,42),C.muted)
+bind(bullets.InputBegan,function(input)if input.UserInputType==Enum.UserInputType.MouseButton1 or input.UserInputType==Enum.UserInputType.Touch then key:CaptureFocus()end end)
+bind(key:GetPropertyChangedSignal('Text'),function()bullets.Text=#key.Text==0 and'Anahtarı buraya yapıştır…'or string.rep('●',math.min(#key.Text,28))end)
+local remember=plugin:GetSetting('HexforgeRemember')==true
+local rememberButton=make('TextButton',settingsPage,{Position=UDim2.fromOffset(0,91),Size=UDim2.fromOffset(650,26),BackgroundTransparency=1,Text=(remember and'[✓] 'or'[ ] ')..'Bu Windows hesabında şifreli hatırla (DPAPI)',TextSize=12,TextXAlignment=Enum.TextXAlignment.Left,Font=Enum.Font.Gotham,TextColor3=C.muted})
+bind(rememberButton.Activated,function()if busy then log('İşlem sürerken kasa tercihini değiştirme.');return end;remember=not remember;if Bridge.ready then operation(function()Bridge.remember(remember);log(remember and'Anahtar DPAPI ile kaydedildi.'or'Kalıcı anahtar silindi; bu oturum açık.')end)end;plugin:SetSetting('HexforgeRemember',remember);rememberButton.Text=(remember and'[✓] 'or'[ ] ')..'Bu Windows hesabında şifreli hatırla (DPAPI)'end)
+local function publishSkin()log('Yerel API oturumu hazır. Check-UI mevcut asset ID’lerini kullanır; plugin skin upload’ı gerekmez.',1)end
+button(settingsPage,'connect_label',417,39,233,44,function()operation(function()local secret=key.Text;key.Text='';Bridge.connect(secret,remember);secret=nil;publishSkin()end)end)
+button(settingsPage,'forget_label',0,124,280,42,function()operation(function()Bridge.forget();plugin:SetSetting('HexforgeRemember',false);remember=false;rememberButton.Text='[ ] Bu Windows hesabında şifreli hatırla (DPAPI)';key.Text='';log('Kaydedilmiş anahtar silindi. Asset cache silinmedi.')end)end)
+local ownerLabel=text(settingsPage,'',UDim2.fromOffset(300,126),UDim2.fromOffset(350,40),C.accent)
+local function updateOwnerLabel()local ok,value=pcall(owner);ownerLabel.Text=ok and value.label or'Hedef belirlenemedi'end
+updateOwnerLabel()
+local ownerPanel=make('ScrollingFrame',settingsPage,{Position=UDim2.fromOffset(0,220),Size=UDim2.fromOffset(650,200),BackgroundColor3=C.bg,ScrollBarThickness=4,Visible=false,ZIndex=70})
+button(settingsPage,'owner_label',0,179,280,38,function()operation(function()
+ for _,o in ipairs(ownerPanel:GetChildren())do o:Destroy()end
+ local rows={{mode='Auto',label='Oyunun sahibi (otomatik)'},{mode='Hesabım',label='Studio hesabım'}}
+ local ok,groups=pcall(function()return game:GetService('GroupService'):GetGroupsAsync(Studio:GetUserId())end)
+ if ok then for _,g in ipairs(groups)do rows[#rows+1]={mode='Grup',id=g.Id,label=g.Name..' • '..g.Role}end end
+ for i,row in ipairs(rows)do local b=make('TextButton',ownerPanel,{Position=UDim2.fromOffset(7,(i-1)*35),Size=UDim2.new(1,-21,0,32),Text=row.label,TextSize=12,Font=Enum.Font.Gotham,TextColor3=C.text,BackgroundColor3=C.card,ZIndex=71});bind(b.Activated,function()if busy then log('Hedefi değiştirmek için devam eden işlem bitsin.');return end;uploadOwner={mode=row.mode,id=row.id};plugin:SetSetting('HexforgeOwner',uploadOwner);updateOwnerLabel();ownerPanel.Visible=false;log('Hedef seçildi. Grup upload yetkisini Roblox kontrol eder; kişisele geçiş yapılmaz.')end)end
+ ownerPanel.CanvasSize=UDim2.fromOffset(0,#rows*35);ownerPanel.Visible=true
+end)end)
+local function slider(y,title,min,max,initial,change)
+ text(settingsPage,title,UDim2.fromOffset(0,y-3),UDim2.fromOffset(200,25),C.muted)
+ local track=make('Frame',settingsPage,{Position=UDim2.fromOffset(230,y+7),Size=UDim2.fromOffset(330,6),BackgroundColor3=C.card,Active=true});round(track)
+ local fill=make('Frame',track,{Size=UDim2.fromScale(0,1),BackgroundColor3=C.accent});round(fill)
+ local knob=make('TextButton',track,{Size=UDim2.fromOffset(16,16),Position=UDim2.fromScale(0,.5),AnchorPoint=Vector2.new(.5,.5),Text='',BackgroundColor3=C.text,AutoButtonColor=false});round(knob,8)
+ local value=text(settingsPage,'',UDim2.fromOffset(585,y-3),UDim2.fromOffset(65,26),C.accent);local dragInput
+ local function set(n)n=math.clamp(n,min,max);local p=(n-min)/(max-min);fill.Size=UDim2.fromScale(p,1);knob.Position=UDim2.fromScale(p,.5);value.Text=string.format('%.0f%%',n*100);change(n)end
+ local function move(x)set(min+math.clamp((x-track.AbsolutePosition.X)/track.AbsoluteSize.X,0,1)*(max-min))end
+ local function begin(input)if input.UserInputType==Enum.UserInputType.MouseButton1 or input.UserInputType==Enum.UserInputType.Touch then dragInput=input;move(input.Position.X)end end
+ bind(track.InputBegan,begin);bind(knob.InputBegan,begin);bind(UIS.InputChanged,function(input)if dragInput and(input==dragInput or input.UserInputType==Enum.UserInputType.MouseMovement)then move(input.Position.X)end end);bind(UIS.InputEnded,function(input)if input==dragInput or input.UserInputType==Enum.UserInputType.MouseButton1 then dragInput=nil end end);set(initial)
+end
+slider(244,'Önizleme ölçeği',.5,1.5,1,function(v)previewPreferences['HFZoom']=v;if previewGui then previewGui:SetAttribute('HFZoom',v)end end)
+slider(282,'Geçiş hızı',.5,2,1,function(v)previewPreferences['HFSpeed']=v;if previewGui then previewGui:SetAttribute('HFSpeed',v)end end)
+slider(320,'Parçacık yoğunluğu',0,1,1,function(v)previewPreferences['HFFxIntensity']=v;if previewGui then previewGui:SetAttribute('HFFxIntensity',v)end end)
+local layerSearch=input(inspectPage,'Katman ara…',0,0,240,35)
+local layerList=make('ScrollingFrame',inspectPage,{Position=UDim2.fromOffset(0,49),Size=UDim2.fromOffset(240,395),BackgroundColor3=C.card,ScrollBarThickness=4,CanvasSize=UDim2.new(),ClipsDescendants=true})
+local reportScroll=make('ScrollingFrame',inspectPage,{Position=UDim2.fromOffset(257,49),Size=UDim2.fromOffset(393,395),BackgroundColor3=C.card,AutomaticCanvasSize=Enum.AutomaticSize.Y,CanvasSize=UDim2.new(),ScrollBarThickness=4,ClipsDescendants=true})
+local reportBox=input(reportScroll,'',9,9,367,0);reportBox.AutomaticSize=Enum.AutomaticSize.Y;reportBox.MultiLine=true;reportBox.TextEditable=false;reportBox.TextWrapped=true;reportBox.TextSize=12;reportBox.TextXAlignment=Enum.TextXAlignment.Left;reportBox.TextYAlignment=Enum.TextYAlignment.Top
+local function selectLayer(row)
+ if selectedLayerOutline then selectedLayerOutline:Destroy();selectedLayerOutline=nil end
+ local selected=previewGui and previewGui:FindFirstChild('Viewport'):FindFirstChild('Window'):FindFirstChild(row.name,true)
+ if selected and selected:IsA('GuiObject')then selectedLayerOutline=CheckStyle.stroke(selected,Color3.fromRGB(255,208,0),2);selectedLayerOutline.Name='HF_InspectorHighlight'end
+ reportBox.Text='SEÇİLİ KATMAN\n'..row.name..' / '..row.class..'\nAsset: '..tostring(row.asset or'—')..'\nMotion: '..tostring(row.motion or'—')..'\nAction: '..tostring(row.action or'—')..'\nStatik boyut: '..(row.measurable and(math.floor(row.width)..' × '..math.floor(row.height))or'— (GuiObject değil)')..'\n\nSalt okunur inceleme; paketi değiştirmez. Seçili öğe Paket sayfasında sarı çerçevelenir.\n\n'..currentReport.text
+end
+refreshInspection=function()
+ for _,o in ipairs(layerList:GetChildren())do o:Destroy()end
+ if not pack then reportBox.Text='Önce ZIP aç. Katmanlar ve statik kontroller burada görünür.';return end
+ currentReport=Inspector.scan(pack.data);reportBox.Text=currentReport.text;local count=0;local q=layerSearch.Text:lower()
+ for _,row in ipairs(currentReport.nodes)do
+  if q==''or row.name:lower():find(q,1,true)then
+   local b=make('TextButton',layerList,{Position=UDim2.fromOffset(5,count*33),Size=UDim2.fromOffset(225,30),BackgroundColor3=C.bg,Text=string.rep(' ',math.min(row.depth,4))..row.name,TextSize=11,TextColor3=C.text,TextXAlignment=Enum.TextXAlignment.Left,AutoButtonColor=false});bind(b.Activated,function()selectLayer(row)end);count+=1
+  end
+ end;layerList.CanvasSize=UDim2.fromOffset(0,count*33)
+end
+button(inspectPage,'TEKRAR KONTROL',257,0,208,35,function()refreshInspection();log('Statik kontrol yenilendi; native doğrulama değildir.')end)
+button(inspectPage,'ÖNİZLEMEYE DÖN',480,0,170,35,function()selectPage('Package')end)
+bind(layerSearch:GetPropertyChangedSignal('Text'),refreshInspection)
+refreshInspection()
+selectPage('Package');show(false)
+log('Hazır • Check-UI 1.1 • ZIP seç; kendi arayüzü API anahtarı gerektirmez.')
+pcall(refreshLibrary)
+task.spawn(function()local ok=pcall(Bridge.resume);if ok and not dead then operation(publishSkin)end end)
+bind(plugin.Unloading,function()
+ dead=true;canceled=true;for _,c in ipairs(connections)do c:Disconnect()end;disposePreview();host:Destroy()
+end)
+</ProtectedString><bool name="Disabled">false</bool></Properties><Item class="StringValue" referent="RBX1"><Properties><string name="Name">PairToken</string><string name="Value">__PAIR_TOKEN_INSTALLER__</string></Properties></Item></Item></roblox>
