@@ -1,0 +1,928 @@
+2026-10-30 13:52:52 ===== BRIDGE START  v1.5.6  pid=11808  log=C:\Users\pc\OneDrive\Desktop\UqBOAT-v1.5.6 (1)\logs\bridge_debug.log =====
+2026-10-30 13:52:52 configured 1 MCP server(s): roblox
+2026-10-30 13:52:52 listening on ws://127.0.0.1:17613  - load the extension and open a supported AI chat
+2026-10-30 13:52:52 [roblox] launching  (C:\Users\pc\AppData\Local\Python\pythoncore-3.14-64\python.exe C:\Users\pc\OneDrive\Desktop\UqBOAT-v1.5.6 (1)\launch_studio_mcp.py)
+2026-10-30 13:52:52 [roblox] stderr: launch_studio_mcp: using C:\Users\pc\AppData\Local\Roblox\Versions\version-7062aec9dbe74b14\StudioMCP.exe
+2026-10-30 13:52:53 [roblox] stderr: 2026-10-30T10:52:53.133002Z  WARN studio_mcp_proxy::ws_server::server: No proxy found waiting for response init-tools-c03decad-dfdf-4658-af17-dbd1153452f0-007f5eb1-c235-4d57-9355-ed2ae30e1dfe
+2026-10-30 13:52:53 [roblox] MCP server up  (34 tools advertised)
+2026-10-30 13:52:54 ready 34 tools available - Roblox Studio connected
+2026-10-30 13:53:03 extension connected  (127.0.0.1)  [1 client(s)]
+2026-10-30 13:53:50 -> tool  list_roblox_studios()
+2026-10-30 13:53:50 <- list_roblox_studios (0.0s): {"studios":[{"id":"c03decad-dfdf-4658-af17-dbd1153452f0","name":"Place1"}]}
+2026-10-30 13:53:50 -> tool  execute_luau(datamodel_type, code, studio_id)
+2026-10-30 13:53:50 <- execute_luau (0.0s): PlaceId: 0 | Name: Place1 Workspace (2 items):   - Baseplate [Part]     - Textur
+2026-10-30 13:54:01 [roblox] stderr: 2026-10-30T10:54:01.039698Z  WARN studio_mcp_proxy::ws_server::server: No proxy found waiting for response tool-generate_scene-3a880ccd-b329-4b43-9655-ee7ecdd03712
+2026-10-30 13:55:24 -> tool  list_roblox_studios()
+2026-10-30 13:55:24 <- list_roblox_studios (0.0s): {"studios":[{"id":"c03decad-dfdf-4658-af17-dbd1153452f0","name":"Place1"}]}
+2026-10-30 13:55:24 -> tool  screen_capture(capture_id, studio_id)
+2026-10-30 13:55:24 <- screen_capture (0.2s): 
+2026-10-30 13:57:06 -> tool  screen_capture(capture_id, studio_id)
+2026-10-30 13:57:06 <- screen_capture (0.2s): 
+2026-10-30 13:57:44 extension disconnected  [0 client(s)]
+2026-10-30 13:58:28 extension connected  (127.0.0.1)  [1 client(s)]
+2026-10-30 14:00:58 -> tool  list_roblox_studios()
+2026-10-30 14:00:58 <- list_roblox_studios (0.0s): {"studios":[{"id":"c03decad-dfdf-4658-af17-dbd1153452f0","name":"Place1"}]}
+2026-10-30 14:00:58 -> tool  execute_luau(datamodel_type, code, studio_id)
+2026-10-30 14:00:58 <- execute_luau (0.0s): PlaceId: 0 | Name: Place1 Workspace (2 items):   - Baseplate [Part]     - Textur
+2026-10-30 14:01:10 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-30 14:01:10 <- execute_luau (0.0s): {"generationWarnings":"SG.style: unknown material \"Travertine\"; keeping curren
+2026-10-30 14:01:55 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-30 14:01:55 <- execute_luau (0.0s): {"cameraPosition":"125, 83, 82","next":"Exhibits and interior detailing","origin
+2026-10-30 14:02:51 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-30 14:02:51 <- execute_luau (0.1s): {"exteriorCamera":"125, 83, 82","next":"Visual review","galleries":{"1":"Arkeolo
+2026-10-30 14:02:59 -> tool  screen_capture(capture_id, camera_position, look_at_position, studio_id)
+2026-10-30 14:02:59 <- screen_capture (0.2s): 
+2026-10-30 14:03:10 -> tool  screen_capture(capture_id, camera_position, look_at_position, studio_id)
+2026-10-30 14:03:10 <- screen_capture (0.2s): 
+2026-10-30 14:06:24 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-30 14:06:24 <- execute_luau (0.0s): {"cameraChanged":false,"memory":"return [=[\n# Project memory\n## Overview\nAtla
+2026-10-30 14:06:33 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-30 14:06:33 <- execute_luau (0.0s): {"status":"Resolved","officeInstalled":false,"result":"{\"foreignCodeExecuted\":
+2026-10-30 14:07:45 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-30 14:07:45 <- execute_luau (0.0s): {"cameraChanged":false,"path":"Workspace.OfficeSkill_TextureCoupon","texturedFac
+2026-10-30 14:07:53 -> tool  screen_capture(capture_id, camera_position, look_at_position, studio_id)
+2026-10-30 14:07:53 <- screen_capture (0.2s): 
+2026-10-30 14:08:04 -> tool  screen_capture(capture_id, camera_position, look_at_position, studio_id)
+2026-10-30 14:08:04 <- screen_capture (0.1s): 
+2026-10-30 14:13:43 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-30 14:13:43 <- execute_luau (0.0s): {"status":"OFFICE_NOT_PRESENT","installerSourceLength":0,"installerExists":false
+2026-10-30 14:14:29 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-30 14:14:29 <- execute_luau (0.0s): {"status":"INSTALLER_PART_1_STORED","bytes":7674}
+2026-10-30 14:14:48 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-30 14:14:48 <- execute_luau (0.0s): {"status":"INSTALLER_PART_2_STORED","bytes":12500}
+2026-10-30 14:15:15 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-30 14:15:15 <- execute_luau (0.1s): {"path":"Workspace.AtlasOffice","cameraUnchanged":true,"physics":"NOT_RUN","orig
+2026-10-30 14:15:41 -> tool  screen_capture(capture_id, camera_position, look_at_position, studio_id)
+2026-10-30 14:15:41 <- screen_capture (0.2s): 
+2026-10-30 14:16:09 -> tool  screen_capture(capture_id, camera_position, look_at_position, studio_id)
+2026-10-30 14:16:09 <- screen_capture (0.2s): 
+2026-10-30 14:16:52 -> tool  screen_capture(capture_id, camera_position, look_at_position, studio_id)
+2026-10-30 14:16:52 <- screen_capture (0.2s): 
+2026-10-30 14:17:35 -> tool  screen_capture(capture_id, camera_position, look_at_position, studio_id)
+2026-10-30 14:17:36 <- screen_capture (0.2s): 
+2026-10-30 14:18:39 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-30 14:18:39 <- execute_luau (0.0s): {"sink":"Open recessed basin","textureFaces":6354,"actualTextureAudit":"PASS","p
+2026-10-30 14:19:01 -> tool  screen_capture(capture_id, camera_position, look_at_position, studio_id)
+2026-10-30 14:19:01 <- screen_capture (0.1s): 
+2026-10-30 14:19:06 Roblox Studio disconnected - re-enable its MCP server (toggle off/on).
+2026-10-30 14:19:06 [roblox] stderr: 2026-10-30T11:19:06.464045Z  WARN studio_mcp_proxy::ws_server::server: No proxy found waiting for response init-tools-1ff7503f-a8d3-432e-8db0-b6308b0ea853-c164224d-ebe0-4f4f-b31f-c66bb214af6c
+2026-10-30 14:19:07 Place closed (Studio app still connected).
+2026-10-30 14:19:27 Roblox Studio proxy looks stuck (known StudioMCP disconnect bug) - restarting it to recover.
+2026-10-30 14:19:27 [roblox] restarting...
+2026-10-30 14:19:27 [roblox] stdout closed (process ended, exit code None)
+2026-10-30 14:19:28 [roblox] launching  (C:\Users\pc\AppData\Local\Python\pythoncore-3.14-64\python.exe C:\Users\pc\OneDrive\Desktop\UqBOAT-v1.5.6 (1)\launch_studio_mcp.py)
+2026-10-30 14:19:28 [roblox] stderr: launch_studio_mcp: using C:\Users\pc\AppData\Local\Roblox\Versions\version-7062aec9dbe74b14\StudioMCP.exe
+2026-10-30 14:19:28 [roblox] MCP server up  (34 tools advertised)
+2026-10-30 14:19:39 extension disconnected  [0 client(s)]
+2026-10-30 14:21:01 Roblox Studio proxy looks stuck (known StudioMCP disconnect bug) - restarting it to recover.
+2026-10-30 14:21:01 [roblox] restarting...
+2026-10-30 14:21:01 [roblox] stdout closed (process ended, exit code None)
+2026-10-30 14:21:01 [roblox] launching  (C:\Users\pc\AppData\Local\Python\pythoncore-3.14-64\python.exe C:\Users\pc\OneDrive\Desktop\UqBOAT-v1.5.6 (1)\launch_studio_mcp.py)
+2026-10-30 14:21:01 [roblox] stderr: launch_studio_mcp: using C:\Users\pc\AppData\Local\Roblox\Versions\version-7062aec9dbe74b14\StudioMCP.exe
+2026-10-30 14:21:02 [roblox] MCP server up  (34 tools advertised)
+2026-10-30 14:22:34 Roblox Studio proxy looks stuck (known StudioMCP disconnect bug) - restarting it to recover.
+2026-10-30 14:22:34 [roblox] restarting...
+2026-10-30 14:22:34 [roblox] stdout closed (process ended, exit code None)
+2026-10-30 14:22:34 [roblox] launching  (C:\Users\pc\AppData\Local\Python\pythoncore-3.14-64\python.exe C:\Users\pc\OneDrive\Desktop\UqBOAT-v1.5.6 (1)\launch_studio_mcp.py)
+2026-10-30 14:22:34 [roblox] stderr: launch_studio_mcp: using C:\Users\pc\AppData\Local\Roblox\Versions\version-7062aec9dbe74b14\StudioMCP.exe
+2026-10-30 14:22:35 [roblox] MCP server up  (34 tools advertised)
+2026-10-30 16:43:06 ===== BRIDGE START  v1.5.6  pid=9096  log=C:\Users\pc\OneDrive\Desktop\UqBOAT-v1.5.6 (1)\logs\bridge_debug.log =====
+2026-10-30 16:43:06 configured 1 MCP server(s): roblox
+2026-10-30 16:43:06 listening on ws://127.0.0.1:17613  - load the extension and open a supported AI chat
+2026-10-30 16:43:06 [roblox] launching  (C:\Users\pc\AppData\Local\Python\pythoncore-3.14-64\python.exe C:\Users\pc\OneDrive\Desktop\UqBOAT-v1.5.6 (1)\launch_studio_mcp.py)
+2026-10-30 16:43:06 [roblox] stderr: launch_studio_mcp: using C:\Users\pc\AppData\Local\Roblox\Versions\version-7062aec9dbe74b14\StudioMCP.exe
+2026-10-30 16:43:06 [roblox] stderr: 2026-10-30T13:43:06.663023Z  WARN studio_mcp_proxy::ws_server::server: No proxy found waiting for response init-tools-6d2142b6-deb5-4696-bbd4-fbb88c19bbc1-6f72d73b-7f42-4bff-bf52-b8b8c25daf9a
+2026-10-30 16:43:06 [roblox] MCP server up  (34 tools advertised)
+2026-10-30 16:43:08 ready 34 tools available - Roblox Studio connected
+2026-10-30 16:43:41 extension connected  (127.0.0.1)  [1 client(s)]
+2026-10-30 16:45:32 -> tool  list_roblox_studios()
+2026-10-30 16:45:32 <- list_roblox_studios (0.0s): {"studios":[{"id":"6d2142b6-deb5-4696-bbd4-fbb88c19bbc1","name":"Place2"}]}
+2026-10-30 16:45:32 -> tool  execute_luau(datamodel_type, code, studio_id)
+2026-10-30 16:45:32 <- execute_luau (0.0s): PlaceId: 0 | Name: Place2 Workspace (3 items):   - Baseplate [Part]     - Textur
+2026-10-30 16:48:09 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-30 16:48:09 <- execute_luau (0.0s): Rig: Workspace.Rig class=Model Part Head Size=2, 1, 1 CFrame=-5, 4.5, 12.5, 1, 0
+2026-10-30 16:49:05 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-30 16:49:05 <- execute_luau (0.0s): OK DelverZombieHit1 created in Rig: keyframes=23 firstTime=0.0000 lastTime=1.083
+2026-10-30 16:49:28 -> tool  inspect_instance(path, studio_id)
+2026-10-30 16:49:28 <- inspect_instance (0.0s): {"path":"Workspace.Rig.DelverZombieHit1","name":"DelverZombieHit1","className":"
+2026-10-30 16:50:31 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-30 16:50:31 <- execute_luau (0.0s): Rig var, Humanoid=true KeyframeSequence=true keyframes=23 lastTime=1.08329999446
+2026-10-30 16:50:44 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-30 16:50:44 <- execute_luau (0.0s): Karaktere eklendi: AnimSaves baglandi=true, OynatScripti=true, keyframes=23, Rig
+2026-10-30 16:51:39 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-30 16:51:39 <- execute_luau (0.0s): AnimSaves=ObjectValue Value=Workspace.Rig.DelverZombieHit1 KS parent=Workspace.R
+2026-10-30 16:52:05 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-30 16:52:05 <- execute_luau (0.0s): PrimaryPart duzeltildi=HumanoidRootPart ServerStorage kopyasi=23 LoadAnimation t
+2026-10-30 16:52:15 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-30 16:52:15 <- execute_luau (0.0s): keyframes=23 kf1 time=0.0000 poses=1 HumanoidRootPart cf=0, 0, 0, 0.994521916, 0
+2026-10-30 16:52:31 -> tool  search_game_tree(datamodel_type, keywords, max_depth, head_limit, studio_id)
+2026-10-30 16:52:31 <- search_game_tree (0.0s): [{"parentName":"ServerStorage","fullPath":"ServerStorage.RBX_ANIMSAVES","name":"
+2026-10-30 16:52:38 -> tool  inspect_instance(path, studio_id)
+2026-10-30 16:52:38 <- inspect_instance (0.0s): {"path":"ServerStorage.RBX_ANIMSAVES","name":"RBX_ANIMSAVES","className":"Model"
+2026-10-30 16:52:46 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-30 16:52:46 <- execute_luau (0.0s): ServerStorage.RBX_ANIMSAVES.Rig [ObjectValue] Value=Workspace.Rig Rig.AnimSaves 
+2026-10-30 16:52:56 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-30 16:52:56 <- execute_luau (0.0s): RBX_ANIMSAVES child: Rig [ObjectValue] -> Rig RBX_ANIMSAVES child: DelverZombieH
+2026-10-30 16:53:04 -> tool  start_stop_play(is_start, studio_id)
+2026-10-30 16:53:06 <- start_stop_play (2.5s): Game Started
+2026-10-30 16:53:14 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-30 16:53:16 <- execute_luau (1.2s): t0 RootCF=-5, 2.76181483, 12.5, 0.0507231951, -0.000160485506, -0.998712957, -0.
+2026-10-30 16:53:32 -> tool  start_stop_play(is_start, studio_id)
+2026-10-30 16:53:33 <- start_stop_play (1.0s): Game Stopped
+2026-10-30 16:56:15 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-30 16:56:15 <- execute_luau (0.0s): sabuiltin_Assistant.rbxm.Assistant.Packages._Index.AssistantUI.AssistantUI.Tools
+2026-10-30 16:56:27 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-30 16:56:27 <- execute_luau (0.0s): temizlendi
+2026-10-30 16:56:38 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-30 16:56:38 <- execute_luau (0.0s): KS olustu keyframes=33 first=0.000 last=1.067
+2026-10-30 16:56:49 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-30 16:56:49 <- execute_luau (0.0s): Bitirildi RigKF=34 last=1.0833 ServerKopya=true AnimSavesOK=nil Script=true
+2026-10-30 16:56:57 -> tool  start_stop_play(is_start, studio_id)
+2026-10-30 16:57:00 <- start_stop_play (2.7s): Game Started
+2026-10-30 16:57:08 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-30 16:57:09 <- execute_luau (1.1s): t0 RA=0, 0, 0, 0.147915244, 0.88749367, -0.43643558, -0.88749367, -0.0756259039,
+2026-10-30 16:57:17 -> tool  start_stop_play(is_start, studio_id)
+2026-10-30 16:57:18 <- start_stop_play (1.0s): Game Stopped
+2026-10-30 16:58:54 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-30 16:58:54 <- execute_luau (0.0s): eski klip ve oyun scripti temizlendi, Oynat scripti artik eklenmeyecek
+2026-10-30 16:59:07 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-30 16:59:07 <- execute_luau (0.0s): V3 KS keyframes=34 last=1.0833 C0donusumu=uygulandi
+2026-10-30 16:59:16 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-30 16:59:16 <- execute_luau (0.0s): Editor deposu OK RigKF=34 ServerKF=34 AnimSaves->ServerStorage.RBX_ANIMSAVES Oyn
+2026-10-30 16:59:32 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-30 16:59:32 <- execute_luau (0.3s): Uygulanan keyframe time=0.700 Head merkez=-5.297948360443115, 4.00629997253418, 
+2026-10-30 17:00:02 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-30 17:00:02 <- execute_luau (0.0s): Right Shoulder Transform=0, 0, 0, 0.689197302, -0.239731759, 0.683765829, 0.2397
+2026-10-30 17:00:16 -> tool  screen_capture(capture_id, camera_position, look_at_position, studio_id)
+2026-10-30 17:00:16 <- screen_capture (0.2s): 
+2026-10-30 17:00:33 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-30 17:00:33 <- execute_luau (0.0s): TorsoPos=-5, 2.5799999237060547, 12.5 TorsoUp=-0.19863231480121613, 0.9508667588
+2026-10-30 17:01:01 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-30 17:01:02 <- execute_luau (1.0s): before=-4.083008766174316, 2.476217269897461, 13.682520866394043 afterZ120=-4.08
+2026-10-30 17:01:35 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-30 17:01:35 <- execute_luau (0.3s): HumanoidRootPart=-5, 3, 12.5 Torso=-5, 3, 12.5 Head=-5, 4.5, 12.5 Right Arm=-3.5
+2026-10-30 17:01:50 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-30 17:01:50 <- execute_luau (0.0s): V4 KS=34 last=1.0833 restDir RA=0.7071067690849304, -0.7071067690849304, 0 LA=-0
+2026-10-30 17:02:00 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-30 17:02:00 <- execute_luau (0.0s): Right Arm hedef=(-0.53,0.82,-0.24) pozSonucu=(-0.53,0.82,-0.24) aciFark=0.0deg L
+2026-10-30 17:04:49 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-30 17:04:49 <- execute_luau (0.0s): RBX_ANIMSAVES.Rig dugumu=ObjectValue Klip rig dugumunun altina eklendi: parent=S
+2026-10-30 17:04:58 -> tool  start_stop_play(is_start, studio_id)
+2026-10-30 17:05:00 <- start_stop_play (2.6s): Game Started
+2026-10-30 17:05:11 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-30 17:05:11 <- execute_luau (0.6s): trackLen=1.083 time=0.500 playing=true TorsoPos=-5, 3, 12.5 HeadPos=-6.040095329
+2026-10-30 17:05:21 -> tool  screen_capture(capture_id, camera_position, look_at_position, studio_id)
+2026-10-30 17:05:21 <- screen_capture (0.2s): 
+2026-10-30 17:05:37 -> tool  start_stop_play(is_start, studio_id)
+2026-10-30 17:05:38 <- start_stop_play (1.0s): Game Stopped
+2026-10-30 17:05:48 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-30 17:05:48 <- execute_luau (0.0s): EditorYolu: ServerStorage.RBX_ANIMSAVES.Rig.DelverZombieHit1 var=true keyframes=
+2026-10-30 17:07:06 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-30 17:07:06 <- execute_luau (0.0s): AnimSaves.Value=ServerStorage.RBX_ANIMSAVES.Rig AnimSaves.Value.DelverZombieHit1
+2026-10-30 17:07:21 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-30 17:07:21 <- execute_luau (0.0s): 60FPS tek tek keyframe OK: adet=66 ilk=0.0000 son=1.0833 aralik=0.0167
+2026-10-30 17:08:27 [roblox] stderr: 2026-10-30T14:08:27.942189Z  WARN studio_mcp_proxy::ws_server::server: No proxy found waiting for response init-tools-ee74ddf8-5608-4e9f-a870-df1da87e1524-8b4cc494-5a7f-4af4-b312-5050ed3e18a4
+2026-10-30 17:08:57 -> tool  list_roblox_studios()
+2026-10-30 17:08:57 <- list_roblox_studios (0.0s): {"studios":[{"id":"ee74ddf8-5608-4e9f-a870-df1da87e1524","name":"Place3"}]}
+2026-10-30 17:08:57 -> tool  execute_luau(datamodel_type, code, studio_id)
+2026-10-30 17:08:57 <- execute_luau (0.0s): PlaceId: 0 | Name: Place3 Workspace (3 items):   - Baseplate [Part]     - Textur
+2026-10-30 17:16:11 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-30 17:16:11 <- execute_luau (0.0s): {"ok":true,"path":"Workspace.Rig.AnimSaves.Zombie_Hit1","keyframes":9}
+2026-10-30 17:16:24 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-30 17:16:24 <- execute_luau (0.0s): {"look":{"1":-0,"3":-1,"2":-0},"pos":{"1":-3.7540693283081056,"3":-3.40487670898
+2026-10-30 17:16:32 -> tool  screen_capture(capture_id, camera_position, look_at_position, studio_id)
+2026-10-30 17:16:32 <- screen_capture (0.2s): 
+2026-10-30 17:16:51 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-30 17:16:51 <- execute_luau (0.0s): {"applied":6}
+2026-10-30 17:16:58 -> tool  screen_capture(capture_id, camera_position, look_at_position, studio_id)
+2026-10-30 17:16:59 <- screen_capture (0.2s): 
+2026-10-30 17:17:21 -> tool  screen_capture(capture_id, camera_position, look_at_position, studio_id)
+2026-10-30 17:17:21 <- screen_capture (0.2s): 
+2026-10-30 17:18:02 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-30 17:18:02 <- execute_luau (0.0s): {"Left Shoulder":{"relRotDeg":{"1":-72,"3":-6,"2":22},"c0Pos":{"1":-1,"3":0,"2":
+2026-10-30 17:18:52 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-30 17:18:52 <- execute_luau (0.0s): {"patched":12}
+2026-10-30 17:19:18 -> tool  screen_capture(capture_id, camera_position, look_at_position, studio_id)
+2026-10-30 17:19:18 <- screen_capture (0.2s): 
+2026-10-30 17:20:01 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-30 17:20:01 <- execute_luau (0.0s): {"patched":8,"rightArmWorldRotDeg":{"1":28,"3":-39,"2":-12}}
+2026-10-30 17:20:13 -> tool  screen_capture(capture_id, camera_position, look_at_position, studio_id)
+2026-10-30 17:20:13 <- screen_capture (0.2s): 
+2026-10-30 17:20:30 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-30 17:20:30 <- execute_luau (0.0s): {"restored":6,"keyframes":{"1":"Stance@0","3":"Windup@0.30000001192092896","2":"
+2026-10-30 17:24:36 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-30 17:24:36 <- execute_luau (0.0s): {"keyframes":41,"midStrikeRightArmPitch":122.25757575757577,"impactRightArmPitch
+2026-10-30 17:28:39 -> tool  list_roblox_studios()
+2026-10-30 17:28:39 <- list_roblox_studios (0.0s): {"studios":[{"id":"ee74ddf8-5608-4e9f-a870-df1da87e1524","name":"Place3"}]}
+2026-10-30 17:28:39 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-30 17:28:39 <- execute_luau (0.0s): {"keyframes":41,"duration":1.1666666269302369,"markers":{"1":"Windup@0.3","3":"R
+2026-10-30 17:29:21 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-30 17:29:21 <- execute_luau (0.0s): {"keyframes":73,"duration":1.1,"minRightArmSpeedDegPerSecAfterHit":24,"atTime":0
+2026-10-30 17:31:09 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-30 17:31:09 <- execute_luau (0.0s): {"keyframes":81,"duration":1.2,"impactRightLegWorldPitch":-24,"impactLeftLegWorl
+2026-10-30 17:35:19 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-30 17:35:19 <- execute_luau (0.0s): {"keyframes":82,"impactTorsoPitch":-68,"impactTorsoCenterOffset":{"1":0.1,"3":-0
+2026-10-30 17:35:32 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-30 17:35:32 <- execute_luau (0.0s): {"applied":6}
+2026-10-30 17:35:39 -> tool  screen_capture(capture_id, camera_position, look_at_position, studio_id)
+2026-10-30 17:35:40 <- screen_capture (0.2s): 
+2026-10-30 17:35:54 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-30 17:35:54 <- execute_luau (0.0s): {"hrp":{"1":-1.1,"3":12.8,"2":3},"Right Leg":{"1":-0.6,"3":12.9,"2":0.7},"Head":
+2026-10-30 17:36:03 -> tool  screen_capture(capture_id, camera_position, look_at_position, studio_id)
+2026-10-30 17:36:03 <- screen_capture (0.2s): 
+2026-10-30 17:36:23 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-30 17:36:23 <- execute_luau (0.0s): {"restored":6}
+2026-10-30 17:38:44 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-30 17:38:44 <- execute_luau (0.1s): {"clones":10,"centerZ":0.5}
+2026-10-30 17:38:52 -> tool  screen_capture(capture_id, camera_position, look_at_position, studio_id)
+2026-10-30 17:38:52 <- screen_capture (0.3s): 
+2026-10-30 17:39:13 -> tool  screen_capture(capture_id, camera_position, look_at_position, studio_id)
+2026-10-30 17:39:13 <- screen_capture (0.2s): 
+2026-10-30 17:39:52 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-30 17:39:52 <- execute_luau (0.0s): {"Preview_0.51":{"headRelToHRP":{"1":0.18,"3":-2.41,"2":-0.28},"torsoUpInHRP":{"
+2026-10-30 17:40:09 -> tool  screen_capture(capture_id, camera_position, look_at_position, studio_id)
+2026-10-30 17:40:09 <- screen_capture (0.2s): 
+2026-10-30 17:40:39 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-30 17:40:39 <- execute_luau (0.0s): {"count":10,"rootC0Deg":{"1":-159,"3":-168,"2":6},"torsoUp":{"1":0.1,"3":-0.93,"
+2026-10-30 17:41:09 -> tool  screen_capture(capture_id, camera_position, look_at_position, studio_id)
+2026-10-30 17:41:09 <- screen_capture (0.2s): 
+2026-10-30 17:42:25 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-30 17:42:25 <- execute_luau (0.1s): {"keyframes":82,"strip":10}
+2026-10-30 17:42:34 -> tool  screen_capture(capture_id, camera_position, look_at_position, studio_id)
+2026-10-30 17:42:34 <- screen_capture (0.2s): 
+2026-10-30 17:43:09 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-30 17:43:09 <- execute_luau (0.0s): {"Preview_0.51":{"headLook":{"1":0.21,"3":-0.91,"2":-0.37},"rightArmDown":{"1":-
+2026-10-30 17:43:26 -> tool  screen_capture(capture_id, camera_position, look_at_position, studio_id)
+2026-10-30 17:43:26 <- screen_capture (0.2s): 
+2026-10-30 17:43:58 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-30 17:43:58 <- execute_luau (0.0s): {"removed":80}
+2026-10-30 17:44:06 -> tool  screen_capture(capture_id, camera_position, look_at_position, studio_id)
+2026-10-30 17:44:07 <- screen_capture (0.2s): 
+2026-10-30 17:44:33 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-30 17:44:33 <- execute_luau (0.0s): 10
+2026-10-30 17:44:41 -> tool  screen_capture(capture_id, camera_position, look_at_position, studio_id)
+2026-10-30 17:44:41 <- screen_capture (0.2s): 
+2026-10-30 17:45:30 -> tool  screen_capture(capera_position, camera_position, look_at_position, capture_id, studio_id)
+2026-10-30 17:45:30 <- screen_capture (0.2s): 
+2026-10-30 17:46:22 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-30 17:46:22 <- execute_luau (0.0s): {"models":10,"rightArmDown030":{"1":0.44,"3":-0.3,"2":0.85}}
+2026-10-30 17:46:30 -> tool  screen_capture(capture_id, camera_position, look_at_position, studio_id)
+2026-10-30 17:46:31 <- screen_capture (0.2s): 
+2026-10-30 17:47:11 -> tool  screen_capture(capture_id, camera_position, look_at_position, studio_id)
+2026-10-30 17:47:12 <- screen_capture (0.2s): 
+2026-10-30 17:47:47 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-30 17:47:47 <- execute_luau (0.0s): {"1":{"1":"Preview_0.00","3":"torsoTopZ=-0.31","2":"z=-22","5":"rHandY=-0.96","4
+2026-10-30 17:48:15 -> tool  screen_capture(capture_id, camera_position, look_at_position, studio_id)
+2026-10-30 17:48:16 <- screen_capture (0.1s): 
+2026-10-30 17:48:39 -> tool  screen_capture(capture_id, camera_position, look_at_position, studio_id)
+2026-10-30 17:48:39 <- screen_capture (0.2s): 
+2026-10-30 17:49:50 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-30 17:49:50 <- execute_luau (0.0s): {"keyframes":82,"strip":10}
+2026-10-30 17:50:00 -> tool  screen_capture(capture_id, camera_position, look_at_position, studio_id)
+2026-10-30 17:50:00 <- screen_capture (0.2s): 
+2026-10-30 17:50:18 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-30 17:50:18 <- execute_luau (0.0s): {"keyframes":82,"stripRemoved":true,"baked":"CatmullRom60fps_v6"}
+2026-10-30 17:53:43 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-30 17:53:43 <- execute_luau (0.0s): {"keyframes":87,"strip":10}
+2026-10-30 17:53:54 -> tool  screen_capture(capture_id, camera_position, look_at_position, studio_id)
+2026-10-30 17:53:54 <- screen_capture (0.2s): 
+2026-10-30 17:54:10 -> tool  screen_capture(capture_id, camera_position, look_at_position, studio_id)
+2026-10-30 17:54:10 <- screen_capture (0.1s): 
+2026-10-30 17:54:28 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-30 17:54:28 <- execute_luau (0.0s): {"keyframes":87,"markers":{"1":"Windup@0.3199999928474426","3":"Recover@1.019999
+2026-10-30 17:58:31 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-30 17:58:31 <- execute_luau (0.0s): {"keyframes":92,"strip":10}
+2026-10-30 17:58:41 -> tool  screen_capture(capture_id, camera_position, look_at_position, studio_id)
+2026-10-30 17:58:41 <- screen_capture (0.1s): 
+2026-10-30 17:58:57 -> tool  screen_capture(capture_id, camera_position, look_at_position, studio_id)
+2026-10-30 17:58:57 <- screen_capture (0.2s): 
+2026-10-30 17:59:13 -> tool  screen_capture(capture_id, camera_position, look_at_position, studio_id)
+2026-10-30 17:59:13 <- screen_capture (0.1s): 
+2026-10-30 17:59:30 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-30 17:59:30 <- execute_luau (0.0s): {"keyframes":92,"baked":"CatmullRom60fps_v8_swipe_overlap"}
+2026-10-30 18:03:21 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-30 18:03:21 <- execute_luau (0.0s): {"keyframes":98,"armPitchSpeedProfile":"0.40:-128 0.42:-79 0.43:6 0.43:69 0.45:1
+2026-10-30 18:03:46 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-30 18:03:47 <- execute_luau (0.0s): 10
+2026-10-30 18:03:56 -> tool  screen_capture(capture_id, camera_position, look_at_position, studio_id)
+2026-10-30 18:03:56 <- screen_capture (0.2s): 
+2026-10-30 18:04:20 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-30 18:04:20 <- execute_luau (0.0s): {"keyframes":98,"memoryUpdated":true}
+2026-10-30 18:08:34 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-30 18:08:34 <- execute_luau (0.0s): {"keyframes":98,"strip":5}
+2026-10-30 18:08:44 -> tool  screen_capture(capture_id, camera_position, look_at_position, studio_id)
+2026-10-30 18:08:44 <- screen_capture (0.2s): 
+2026-10-30 18:09:00 -> tool  screen_capture(capture_id, camera_position, look_at_position, studio_id)
+2026-10-30 18:09:00 <- screen_capture (0.2s): 
+2026-10-30 18:09:17 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-30 18:09:17 <- execute_luau (0.0s): {"keyframes":98,"baked":"KB60fps_v10_posture"}
+2026-10-30 18:13:01 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-30 18:13:01 <- execute_luau (0.0s): {"keyframes":98,"leftArmPitchRange":{"1":-59,"2":44},"strip":6}
+2026-10-30 18:13:15 -> tool  screen_capture(capture_id, camera_position, look_at_position, studio_id)
+2026-10-30 18:13:15 <- screen_capture (0.2s): 
+2026-10-30 18:13:36 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-30 18:13:36 <- execute_luau (0.0s): {"keyframes":98,"baked":"KB60fps_v11_fullbody"}
+2026-10-30 18:17:54 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-30 18:17:54 <- execute_luau (0.0s): {"keyframes":98,"leftArm":{"1":"0.00: dunya egim=15  on/arka=-0.00  yan=-0.26  g
+2026-10-30 18:18:23 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-30 18:18:23 <- execute_luau (0.0s): 5
+2026-10-30 18:18:32 -> tool  screen_capture(capture_id, camera_position, look_at_position, studio_id)
+2026-10-30 18:18:32 <- screen_capture (0.1s): 
+2026-10-30 18:19:19 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-30 18:19:19 <- execute_luau (0.0s): {"keyframes":98,"baked":"KB60fps_v12_pendulumArm"}
+2026-10-30 18:22:23 -> tool  list_roblox_studios()
+2026-10-30 18:22:23 <- list_roblox_studios (0.0s): {"studios":[{"id":"ee74ddf8-5608-4e9f-a870-df1da87e1524","name":"Place3"}]}
+2026-10-30 18:22:23 -> tool  execute_luau(datamodel_type, code, studio_id)
+2026-10-30 18:22:23 <- execute_luau (0.0s): PlaceId: 0 | Name: Place3 Workspace (4 items):   - Baseplate [Part]     - Textur
+2026-10-30 18:22:44 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-30 18:22:44 <- execute_luau (0.0s): {"keyframes":98,"selected":"Workspace.Rig.AnimSaves.Zombie_Hit1","saveDialog":"p
+2026-10-30 18:23:48 -> tool  search_asset(query, assetType, scope, maxResults, studio_id)
+2026-10-30 18:23:48 <- search_asset (0.3s): {"scope":"user","nextSteps":["Review the results and choose the best asset for t
+2026-10-30 18:23:58 -> tool  search_asset(query, assetType, scope, maxResults, studio_id)
+2026-10-30 18:23:59 <- search_asset (0.3s): {"scope":"user","nextSteps":["Review the results and choose the best asset for t
+2026-10-30 18:24:17 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-30 18:24:21 <- execute_luau (3.7s): {"71604172713075":{"ok":true,"loop":false,"name":"KeyframeSequence","namedKeys":
+2026-10-30 18:28:36 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-30 18:28:38 <- execute_luau (1.7s): {"keyframes":98,"loop":true,"namedKeys":"Stance,Dip,CockA,CockPeak,CockDrift,Arc
+2026-10-30 18:28:52 -> tool  start_stop_play(is_start, studio_id)
+2026-10-30 18:28:55 <- start_stop_play (3.1s): Game Started
+2026-10-30 18:29:06 -> tool  user_mouse_input(datamodel_type, actions, studio_id)
+2026-10-30 18:29:12 <- user_mouse_input (6.1s)  [SLOW]: Success
+2026-10-30 18:29:20 -> tool  get_console_output(studio_id)
+2026-10-30 18:29:20 <- get_console_output (0.0s): [Zombie_Hit1] Test hazir: sag tik ile oynat. [Zombie_Hit1] oynatiliyor, sure: 0.
+2026-10-30 18:29:53 -> tool  start_stop_play(is_start, studio_id)
+2026-10-30 18:29:54 <- start_stop_play (1.1s): Game Stopped
+2026-10-30 18:35:24 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-30 18:35:24 <- execute_luau (0.0s): {"template":"ServerStorage.ZombieCombat.DummyTemplate","client":"StarterPlayer.S
+2026-10-30 18:35:59 -> tool  start_stop_play(is_start, studio_id)
+2026-10-30 18:36:00 <- start_stop_play (1.0s): Game Started
+2026-10-30 18:36:48 -> tool  start_stop_play(is_start, studio_id)
+2026-10-30 18:36:49 <- start_stop_play (1.0s): Game Started
+2026-10-30 18:38:50 -> tool  list_roblox_studios()
+2026-10-30 18:38:50 <- list_roblox_studios (0.0s): {"studios":[{"id":"ee74ddf8-5608-4e9f-a870-df1da87e1524","name":"Place3"}]}
+2026-10-30 18:38:50 -> tool  character_navigation(datamodel_type, x, y, z, studio_id)
+2026-10-30 18:38:50 <- character_navigation (0.0s): Client datamodel is not available in Edit mode
+2026-10-30 18:39:08 -> tool  get_studio_state(studio_id)
+2026-10-30 18:39:08 <- get_studio_state (0.0s): - Current Studio Mode: Edit - Available DataModels: Edit - Focused DataModel in 
+2026-10-30 18:39:17 -> tool  start_stop_play(is_start, studio_id)
+2026-10-30 18:39:20 <- start_stop_play (2.7s): Game Started
+2026-10-30 18:41:02 [roblox] stderr: 2026-10-30T15:41:02.201997Z ERROR studio_mcp_proxy::ws_server::server: WebSocket error from studio ee74ddf8-5608-4e9f-a870-df1da87e1524: IO error: Varolan bir bağlantı uzaktaki bir ana bilgisayar tarafından zorla kapatıldı. (os error 10054)
+2026-10-30 18:41:09 Roblox Studio disconnected - re-enable its MCP server (toggle off/on).
+2026-10-30 18:41:10 Place closed (Studio app still connected).
+2026-10-30 18:41:17 [roblox] stderr: 2026-10-30T15:41:17.463803Z  WARN studio_mcp_proxy::ws_server::server: No proxy found waiting for response init-tools-608ecc8a-71a3-41fa-9b44-f28addaf70ee-d7e4e566-01b3-41ac-9444-bd8066deafa6
+2026-10-30 18:41:18 Roblox Studio connected - 34 tools ready.
+2026-10-30 18:41:20 Place loaded in Studio.
+2026-10-30 18:41:29 -> tool  get_studio_state(studio_id)
+2026-10-30 18:41:29 [roblox] stderr: 2026-10-30T15:41:29.489137Z  WARN studio_mcp_proxy::ws_server::server: Proxy 69b7c0e4-dafd-4e7d-8b57-d3bab9346d3c targeted studio ee74ddf8-5608-4e9f-a870-df1da87e1524 which is not connected
+2026-10-30 18:41:31 <- get_studio_state (1.8s): - Current Studio Mode: Edit - Available DataModels: Edit - Focused DataModel in 
+2026-10-30 18:41:33 [roblox] stderr: 2026-10-30T15:41:33.681262Z  WARN studio_mcp_proxy::ws_server::server: No proxy found waiting for response init-tools-8a9e72d4-753e-4c96-99cf-2172752df261-2ae6889f-d72b-47cf-9335-b71670d2dc84
+2026-10-30 18:43:38 extension disconnected  [0 client(s)]
+2026-10-30 18:43:40 [roblox] stderr: 2026-10-30T15:43:40.643883Z  WARN studio_mcp_proxy::ws_server::server: No proxy found waiting for response init-tools-68075e85-329e-401c-95aa-3851e818a7dd-c5166f56-2bd6-47ae-96fd-88b66f3f6c5a
+2026-10-30 18:43:40 Roblox Studio disconnected - re-enable its MCP server (toggle off/on).
+2026-10-30 18:43:42 Place closed (Studio app still connected).
+2026-10-31 00:03:03 ===== BRIDGE START  v1.5.6  pid=3024  log=C:\Users\pc\OneDrive\Desktop\UqBOAT-v1.5.6 (1)\logs\bridge_debug.log =====
+2026-10-31 00:03:03 configured 1 MCP server(s): roblox
+2026-10-31 00:03:03 listening on ws://127.0.0.1:17613  - load the extension and open a supported AI chat
+2026-10-31 00:03:03 [roblox] launching  (C:\Users\pc\AppData\Local\Python\pythoncore-3.14-64\python.exe C:\Users\pc\OneDrive\Desktop\UqBOAT-v1.5.6 (1)\launch_studio_mcp.py)
+2026-10-31 00:03:03 [roblox] stderr: launch_studio_mcp: using C:\Users\pc\AppData\Local\Roblox\Versions\version-7062aec9dbe74b14\StudioMCP.exe
+2026-10-31 00:03:04 [roblox] MCP server up  (34 tools advertised)
+2026-10-31 00:03:05 [roblox] stderr: 2026-10-30T21:03:05.984098Z  WARN studio_mcp_proxy::ws_server::server: No proxy found waiting for response init-tools-d262c66c-8da3-4618-be2d-5eb121e4a3a7-72cda3ff-b312-41f0-a627-a3e96db435e2
+2026-10-31 00:03:07 ready 34 tools available - Roblox Studio connected
+2026-10-31 00:04:03 [roblox] stderr: 2026-10-30T21:04:03.568029Z  WARN studio_mcp_proxy::ws_server::server: No proxy found waiting for response init-tools-cd37e6e4-3fa4-4584-b7a7-a918cf510fd7-e5e67a16-b8e5-4ff1-8458-25486555dda1
+2026-10-31 00:05:58 [roblox] stderr: 2026-10-30T21:05:58.008631Z  WARN studio_mcp_proxy::ws_server::server: No proxy found waiting for response init-tools-2642391d-2349-4888-bf2f-51e81857acd3-820a8bb0-48ad-4f95-a6a4-9750ac41168f
+2026-10-31 00:06:01 extension connected  (127.0.0.1)  [1 client(s)]
+2026-10-31 00:07:39 -> tool  list_roblox_studios()
+2026-10-31 00:07:39 <- list_roblox_studios (0.0s): {"studios":[{"id":"2642391d-2349-4888-bf2f-51e81857acd3","name":"Place3"}]}
+2026-10-31 00:07:39 -> tool  execute_luau(datamodel_type, code, studio_id)
+2026-10-31 00:07:39 <- execute_luau (0.0s): PlaceId: 0 | Name: Place3 Workspace (2 items):   - Baseplate [Part]     - Textur
+2026-10-31 00:11:04 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-31 00:11:05 <- execute_luau (0.9s): {"assetLoaded":true,"memory":"MISSING","assetRoots":{"1":{"name":"Texture","clas
+2026-10-31 00:12:51 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-31 00:12:51 <- execute_luau (0.0s): {"coupon":"Workspace.ModelMaker_Studs_Kupon","image":"rbxassetid://3014551673","
+2026-10-31 00:23:00 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-31 00:23:00 <- execute_luau (0.0s): {"completed":false,"couponStillPresent":true}
+2026-10-31 00:27:31 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-31 00:27:31 <- execute_luau (0.0s): {"cameraChanged":false,"textureFaces":120,"model":"Workspace.Exchange_Studios_Be
+2026-10-31 00:28:22 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-31 00:28:22 <- execute_luau (0.0s): {"pumpIslands":3,"stage":"PUMPS","partsAdded":132,"textureFacesAdded":180}
+2026-10-31 00:29:30 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-31 00:29:30 <- execute_luau (0.0s): {"interiorBuilt":false,"partsAdded":11,"approvedTextureFaces":342,"memoryUpdated
+2026-10-31 00:43:16 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-31 00:43:16 <- execute_luau (0.0s): {"maxPlayers":30,"memory":"return [==[\n\n# Project memory\n\n## Overview\n\nRef
+2026-10-31 00:44:21 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-31 00:44:21 <- execute_luau (0.0s): {"cameraChanged":false,"projectMemoryUpdated":true,"serverFolder":"ServerScriptS
+2026-10-31 00:44:57 -> tool  generate_mesh(textPrompt, async, studio_id)
+2026-10-31 00:44:57 <- generate_mesh (0.0s): {"jobId":"2670049b-50ec-4c89-96d3-67f2bc5a74a4","status":"Running"}
+2026-10-31 00:45:41 -> tool  generate_mesh(textPrompt, async, studio_id)
+2026-10-31 00:45:41 <- generate_mesh (0.0s): {"jobId":"137a4dd0-21d1-4c62-87a2-638ad6e20dc7","status":"Running"}
+2026-10-31 00:46:43 -> tool  generate_mesh(textPrompt, async, studio_id)
+2026-10-31 00:46:43 <- generate_mesh (0.0s): {"jobId":"510e7cc9-0757-401e-b43d-4fbe715533a3","status":"Running"}
+2026-10-31 00:47:53 -> tool  generate_mesh(textPrompt, async, studio_id)
+2026-10-31 00:47:53 <- generate_mesh (0.0s): {"jobId":"00d9b0f2-1005-44ab-bbba-bfb9c2942dd7","status":"Running"}
+2026-10-31 00:48:13 -> tool  generate_mesh(textPrompt, async, studio_id)
+2026-10-31 00:48:13 <- generate_mesh (0.0s): {"jobId":"1ee5b505-897b-41b2-96fa-b0e94b08fbe5","status":"Running"}
+2026-10-31 00:50:08 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-31 00:50:08 <- execute_luau (0.0s): {"plaza":"Workspace.EggSplash_World.Hub.PublicPlaza","parts":47,"cameraChanged":
+2026-10-31 00:51:00 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-31 00:51:00 <- execute_luau (0.0s): {"path":"Workspace.EggSplash_World.Hub.Plots","petSpots":180,"partsAdded":690,"p
+2026-10-31 00:52:19 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-31 00:52:19 <- execute_luau (0.0s): {"eggsPerBiome":3,"partsAdded":263,"biomes":5,"monsterSpawnsPerBiome":2}
+2026-10-31 00:53:18 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-31 00:53:18 <- execute_luau (0.0s): {"eggTemplates":5,"petTemplates":5,"partsCreated":81}
+2026-10-31 00:55:23 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-31 00:55:23 <- execute_luau (0.0s): {"mobileStruggleButton":true,"style":"Check-UI reference","ui":"StarterGui.EggSp
+2026-10-31 00:57:15 -> tool  multi_edit(datamodel_type, file_path, className, edits, studio_id)
+2026-10-31 00:57:15 <- multi_edit (0.0s): Created Config (ModuleScript) with 1 edits applied
+2026-10-31 00:57:49 -> tool  list_roblox_studios()
+2026-10-31 00:57:49 <- list_roblox_studios (0.0s): {"studios":[{"id":"2642391d-2349-4888-bf2f-51e81857acd3","name":"Place3"}]}
+2026-10-31 00:57:49 -> tool  execute_luau(datamodel_type, code, studio_id)
+2026-10-31 00:57:49 <- execute_luau (0.0s): PlaceId: 0 | Name: Place3 Workspace (7 items):   - Baseplate [Part]     - Textur
+2026-10-31 00:59:53 -> tool  multi_edit(datamodel_type, file_path, className, edits, studio_id)
+2026-10-31 00:59:53 <- multi_edit (0.0s): Created ProfileService (ModuleScript) with 1 edits applied
+2026-10-31 00:59:55 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-31 00:59:55 <- execute_luau (0.0s): {"worldChildren":{"1":"Hub [Folder] 2","3":"Monsters [Folder] 0","2":"Biomes [Fo
+2026-10-31 01:00:31 -> tool  list_roblox_studios()
+2026-10-31 01:00:31 <- list_roblox_studios (0.0s): {"studios":[{"id":"2642391d-2349-4888-bf2f-51e81857acd3","name":"Place3"}]}
+2026-10-31 01:00:31 -> tool  execute_luau(datamodel_type, code, studio_id)
+2026-10-31 01:00:31 <- execute_luau (0.0s): PlaceId: 0 | Name: Place3 Workspace (7 items):   - Baseplate [Part]     - Textur
+2026-10-31 01:02:01 -> tool  list_roblox_studios()
+2026-10-31 01:02:01 <- list_roblox_studios (0.0s): {"studios":[{"id":"2642391d-2349-4888-bf2f-51e81857acd3","name":"Place3"}]}
+2026-10-31 01:02:01 -> tool  execute_luau(datamodel_type, code, studio_id)
+2026-10-31 01:02:01 <- execute_luau (0.0s): PlaceId: 0 | Name: Place3 Workspace (7 items):   - Baseplate [Part]     - Textur
+2026-10-31 01:02:30 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-31 01:02:30 <- execute_luau (0.0s): sabuiltin_Assistant.rbxm.Assistant.Packages._Index.AssistantUI.AssistantUI.Tools
+2026-10-31 01:03:00 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-31 01:03:00 <- execute_luau (0.0s): Edit datamodel is not available in Play mode
+2026-10-31 01:03:12 -> tool  start_stop_play(is_start, studio_id)
+2026-10-31 01:03:14 -> tool  generate_mesh(textPrompt, maxTriangles, studio_id)
+2026-10-31 01:03:16 <- start_stop_play (3.9s): Game Stopped
+2026-10-31 01:04:36 <- generate_mesh (82.7s)  [SLOW]: Mesh generation failed with error: Moderation failed
+2026-10-31 01:05:25 -> tool  generate_mesh(textPrompt, maxTriangles, studio_id)
+2026-10-31 01:05:42 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-31 01:07:10 <- generate_mesh (105.8s)  [SLOW]: {"generationName":"A complete, polished, stylized wooden pirate sailing ship for
+2026-10-31 01:07:10 <- execute_luau (88.1s)  [SLOW]: Edit datamodel is not available in Play mode
+2026-10-31 01:11:00 -> tool  generate_mesh(textPrompt, maxTriangles, studio_id)
+2026-10-31 01:12:08 -> tool  list_roblox_studios()
+2026-10-31 01:12:12 -> tool  execute_luau(code, datamodel_type)
+2026-10-31 01:12:48 <- generate_mesh (107.9s)  [SLOW]: {"generationName":"A complete, polished, stylized wooden pirate sailing ship for
+2026-10-31 01:12:48 <- list_roblox_studios (40.7s)  [SLOW]: {"studios":[{"id":"2642391d-2349-4888-bf2f-51e81857acd3","name":"Place3"}]}
+2026-10-31 01:12:48 <- execute_luau (36.4s)  [SLOW]: {"generatedTag":[],"memory":"return [==[\n\n# Project memory\n\n## Overview\n\nE
+2026-10-31 01:14:44 -> tool  list_roblox_studios()
+2026-10-31 01:14:44 <- list_roblox_studios (0.0s): {"studios":[{"id":"2642391d-2349-4888-bf2f-51e81857acd3","name":"Place3"}]}
+2026-10-31 01:14:44 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-31 01:14:44 <- execute_luau (0.0s): Edit datamodel is not available in Play mode
+2026-10-31 01:15:02 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-31 01:15:02 <- execute_luau (0.0s): {"children":{"1":{"name":"Camera","class":"Camera"},"3":{"name":"Terrain","class
+2026-10-31 01:15:28 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-31 01:15:28 <- execute_luau (0.0s): {"boundingPosition":{"1":94.38352966308594,"3":19.43585205078125,"2":27.52598190
+2026-10-31 01:15:42 -> tool  start_stop_play(is_start, studio_id)
+2026-10-31 01:15:43 <- start_stop_play (1.0s): Game Stopped
+2026-10-31 01:16:22 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-31 01:16:22 <- execute_luau (0.0s): Edit datamodel is not available in Play mode
+2026-10-31 01:17:01 -> tool  get_studio_state(studio_id)
+2026-10-31 01:17:01 <- get_studio_state (0.0s): - Current Studio Mode: Play - Available DataModels: Client, Server - Focused Dat
+2026-10-31 01:17:23 -> tool  user_keyboard_input(datamodel_type, actions, studio_id)
+2026-10-31 01:17:23 <- user_keyboard_input (0.0s): Client datamodel is not available in Edit mode
+2026-10-31 01:18:49 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-31 01:18:49 <- execute_luau (0.0s): {"memory":"return [==[\n\n# Project memory\n\n## Overview\n\nEggSplash: an origi
+2026-10-31 01:19:19 -> tool  screen_capture(capture_id, studio_id)
+2026-10-31 01:19:20 <- screen_capture (0.3s): 
+2026-10-31 01:19:39 -> tool  list_roblox_studios()
+2026-10-31 01:19:39 <- list_roblox_studios (0.0s): {"studios":[{"id":"2642391d-2349-4888-bf2f-51e81857acd3","name":"Place3"}]}
+2026-10-31 01:19:39 -> tool  screen_capture(capture_id, studio_id)
+2026-10-31 01:19:39 <- screen_capture (0.3s): 
+2026-10-31 01:20:21 -> tool  list_roblox_studios()
+2026-10-31 01:20:21 <- list_roblox_studios (0.0s): {"studios":[{"id":"2642391d-2349-4888-bf2f-51e81857acd3","name":"Place3"}]}
+2026-10-31 01:20:21 -> tool  execute_luau(datamodel_type, code, studio_id)
+2026-10-31 01:20:21 <- execute_luau (0.0s): PlaceId: 0 | Name: Place3 Workspace (3 items):   - Baseplate [Part]     - Textur
+2026-10-31 01:23:37 -> tool  script_read(target_file, studio_id)
+2026-10-31 01:23:37 <- script_read (0.0s):      1→return [==[      2→      3→# Project memory      4→      5→## Overview   
+2026-10-31 01:24:34 -> tool  inspect_instance(path, studio_id)
+2026-10-31 01:24:34 <- inspect_instance (0.0s): {"path":"Workspace.KorsanGemisi","name":"KorsanGemisi","className":"Model","attr
+2026-10-31 01:24:53 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-31 01:24:53 <- execute_luau (0.0s): KorsanGemisi bulunamadı
+2026-10-31 01:25:04 -> tool  search_game_tree(datamodel_type, path, max_depth, head_limit, studio_id)
+2026-10-31 01:25:04 <- search_game_tree (0.0s): [{"parentName":"Place3","fullPath":"Workspace","name":"Workspace","className":"W
+2026-10-31 01:25:28 -> tool  generate_procedural_model(prompt, segmentation, studio_id)
+2026-10-31 01:27:28 <- generate_procedural_model (120.0s)  [SLOW]: No response from server 'roblox' after 120.0s.
+2026-10-31 01:27:46 -> tool  generate_procedural_model(prompt, segmentation, studio_id)
+2026-10-31 01:28:44 <- generate_procedural_model (57.7s)  [SLOW]: pollJobStatus error (statusCode=nil), jobId=97430c62-313c-4af6-a181-62fa80efa7f1
+2026-10-31 01:29:37 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-31 01:29:37 <- execute_luau (0.0s): sabuiltin_Assistant.rbxm.Assistant.Packages._Index.AssistantUI.AssistantUI.Tools
+2026-10-31 01:30:20 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-31 01:30:20 <- execute_luau (0.0s): {"created":"Workspace.KorsanGemisi","descendants":190,"anchored":true,"scripts":
+2026-10-31 01:31:34 [roblox] stderr: 2026-10-30T22:31:34.829827Z  WARN studio_mcp_proxy::ws_server::server: No proxy found waiting for response init-tools-8eb4678e-9076-42d9-8764-0d4e2000b1ec-ea81f971-3bfd-46af-9c71-439d86a4fff0
+2026-10-31 01:31:36 [roblox] stdout closed (process ended, exit code None)
+2026-10-31 14:31:32 ===== BRIDGE START  v1.5.6  pid=18128  log=C:\Users\pc\OneDrive\Desktop\UqBOAT-v1.5.6 (1)\logs\bridge_debug.log =====
+2026-10-31 14:31:32 configured 1 MCP server(s): roblox
+2026-10-31 14:31:32 listening on ws://127.0.0.1:17613  - load the extension and open a supported AI chat
+2026-10-31 14:31:32 [roblox] launching  (C:\Users\pc\AppData\Local\Python\pythoncore-3.14-64\python.exe C:\Users\pc\OneDrive\Desktop\UqBOAT-v1.5.6 (1)\launch_studio_mcp.py)
+2026-10-31 14:31:32 [roblox] stderr: launch_studio_mcp: using C:\Users\pc\AppData\Local\Roblox\Versions\version-7062aec9dbe74b14\StudioMCP.exe
+2026-10-31 14:31:33 [roblox] MCP server up  (34 tools advertised)
+2026-10-31 14:31:34 extension connected  (127.0.0.1)  [1 client(s)]
+2026-10-31 14:31:35 [roblox] stderr: 2026-10-31T11:31:35.883333Z  WARN studio_mcp_proxy::ws_server::server: No proxy found waiting for response init-tools-5f565a08-75cc-4d92-bfc1-48a68fdde23d-09872ed5-7b95-4787-8d79-f4efe5411f1e
+2026-10-31 14:31:37 ready 34 tools available - Roblox Studio connected
+2026-10-31 14:32:05 -> tool  list_roblox_studios()
+2026-10-31 14:32:05 <- list_roblox_studios (0.0s): {"studios":[{"id":"5f565a08-75cc-4d92-bfc1-48a68fdde23d","name":"Place1"}]}
+2026-10-31 14:32:05 -> tool  execute_luau(datamodel_type, code, studio_id)
+2026-10-31 14:32:05 <- execute_luau (0.0s): PlaceId: 0 | Name: Place1 Workspace (2 items):   - Baseplate [Part]     - Textur
+2026-10-31 14:33:18 -> tool  generate_scene(textPrompt, studio_id)
+2026-10-31 14:35:18 <- generate_scene (120.0s)  [SLOW]: No response from server 'roblox' after 120.0s.
+2026-10-31 14:35:34 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-31 14:35:34 <- execute_luau (0.0s): {"roots":{"1":{"class":"Camera","name":"Camera","parts":0},"4":{"class":"SpawnLo
+2026-10-31 14:35:45 -> tool  generate_mesh(textPrompt, maxTriangles, segmentation, size, studio_id)
+2026-10-31 14:36:57 <- generate_mesh (71.6s)  [SLOW]: Mesh generation failed with error: {"operationId":"189db28a-96f4-4446-8f3d-617df
+2026-10-31 14:37:27 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-31 14:37:27 <- execute_luau (0.1s): {"created":"Workspace.DesertCanyonHighway","customMeshes":0,"baseParts":1480,"ex
+2026-10-31 14:38:47 [roblox] stderr: 2026-10-31T11:38:47.984835Z  WARN studio_mcp_proxy::ws_server::server: No proxy found waiting for response init-tools-38ade776-c1c2-42ef-a700-8abb2cb42cc0-966c38f6-5434-4ae6-b8af-bb1febaad742
+2026-10-31 14:44:05 -> tool  list_roblox_studios()
+2026-10-31 14:44:05 <- list_roblox_studios (0.0s): {"studios":[{"id":"38ade776-c1c2-42ef-a700-8abb2cb42cc0","name":"Place2"}]}
+2026-10-31 14:44:05 -> tool  execute_luau(datamodel_type, code, studio_id)
+2026-10-31 14:44:05 <- execute_luau (0.0s): PlaceId: 0 | Name: Place2 Workspace (2 items):   - Baseplate [Part]     - Textur
+2026-10-31 14:45:54 -> tool  list_roblox_studios()
+2026-10-31 14:45:54 <- list_roblox_studios (0.0s): {"studios":[{"id":"38ade776-c1c2-42ef-a700-8abb2cb42cc0","name":"Place2"}]}
+2026-10-31 14:45:54 -> tool  execute_luau(datamodel_type, code, studio_id)
+2026-10-31 14:45:54 <- execute_luau (0.0s): PlaceId: 0 | Name: Place2 Workspace (2 items):   - Baseplate [Part]     - Textur
+2026-10-31 14:47:02 -> tool  list_skills(studio_id)
+2026-10-31 14:47:02 <- list_skills (0.0s): <available_skills>   <skill>     <name>rbx-configs-experimentation</name>     <s
+2026-10-31 14:47:31 -> tool  list_skills(studio_id)
+2026-10-31 14:47:31 <- list_skills (0.0s): <available_skills>   <skill>     <name>rbx-configs-experimentation</name>     <s
+2026-10-31 14:49:47 Roblox Studio disconnected - re-enable its MCP server (toggle off/on).
+2026-10-31 14:49:49 Place closed (Studio app still connected).
+2026-10-31 14:49:55 [roblox] stderr: 2026-10-31T11:49:55.557567Z  WARN studio_mcp_proxy::ws_server::server: No proxy found waiting for response init-tools-950a562d-eba7-47fa-9f6b-a30ca658f39e-1848e416-6394-49e6-bdff-1919ad59bc44
+2026-10-31 14:49:57 Roblox Studio connected - 34 tools ready.
+2026-10-31 14:49:59 Place loaded in Studio.
+2026-10-31 14:51:02 -> tool  skill(skill_name, studio_id)
+2026-10-31 14:51:02 [roblox] stderr: 2026-10-31T11:51:02.604796Z  WARN studio_mcp_proxy::ws_server::server: Proxy 8cac51c4-98ab-4920-8c46-3eeb9014eb7e targeted studio 38ade776-c1c2-42ef-a700-8abb2cb42cc0 which is not connected
+2026-10-31 14:51:02 <- skill (0.0s): # Creating a Custom Skill  You are helping the user create a new custom skill fo
+2026-10-31 14:52:05 -> tool  create_skill(skill_name, skill_description, skill_body, studio_id)
+2026-10-31 14:52:05 [roblox] stderr: 2026-10-31T11:52:05.396465Z  WARN studio_mcp_proxy::ws_server::server: Proxy 8cac51c4-98ab-4920-8c46-3eeb9014eb7e targeted studio 38ade776-c1c2-42ef-a700-8abb2cb42cc0 which is not connected
+2026-10-31 14:52:16 <- create_skill (11.3s)  [SLOW]: Skill "sonskills" created successfully. It is now available in the Skills tab un
+2026-10-31 14:52:40 -> tool  create_skill(skill_name, skill_description, skill_body, studio_id)
+2026-10-31 14:52:40 [roblox] stderr: 2026-10-31T11:52:40.794282Z  WARN studio_mcp_proxy::ws_server::server: Proxy 8cac51c4-98ab-4920-8c46-3eeb9014eb7e targeted studio 38ade776-c1c2-42ef-a700-8abb2cb42cc0 which is not connected
+2026-10-31 14:52:42 <- create_skill (1.9s): Skill "roblox-docs" created successfully. It is now available in the Skills tab 
+2026-10-31 15:05:11 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-31 15:05:11 [roblox] stderr: 2026-10-31T12:05:11.175349Z  WARN studio_mcp_proxy::ws_server::server: Proxy 8cac51c4-98ab-4920-8c46-3eeb9014eb7e targeted studio 38ade776-c1c2-42ef-a700-8abb2cb42cc0 which is not connected
+2026-10-31 15:05:11 <- execute_luau (0.0s): {"ok":true,"lobbyParts":16,"maps":3,"tools":2,"configSourceSet":true}
+2026-10-31 15:08:21 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-31 15:08:21 [roblox] stderr: 2026-10-31T12:08:21.328589Z  WARN studio_mcp_proxy::ws_server::server: Proxy 8cac51c4-98ab-4920-8c46-3eeb9014eb7e targeted studio 38ade776-c1c2-42ef-a700-8abb2cb42cc0 which is not connected
+2026-10-31 15:08:21 <- execute_luau (0.0s): []
+2026-10-31 15:08:34 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-31 15:08:34 [roblox] stderr: 2026-10-31T12:08:34.459307Z  WARN studio_mcp_proxy::ws_server::server: Proxy 8cac51c4-98ab-4920-8c46-3eeb9014eb7e targeted studio 38ade776-c1c2-42ef-a700-8abb2cb42cc0 which is not connected
+2026-10-31 15:08:34 <- execute_luau (0.0s): {"workspaceTopChildren":{"1":"Camera [Camera]","3":"Terrain [Terrain]","2":"Base
+2026-10-31 15:08:49 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-31 15:08:49 [roblox] stderr: 2026-10-31T12:08:49.657174Z  WARN studio_mcp_proxy::ws_server::server: Proxy 8cac51c4-98ab-4920-8c46-3eeb9014eb7e targeted studio 38ade776-c1c2-42ef-a700-8abb2cb42cc0 which is not connected
+2026-10-31 15:08:49 <- execute_luau (0.0s): {"1":{"joints":{"1":{"part1":"Right Arm","name":"Right Shoulder","Transform":"0,
+2026-10-31 15:09:09 -> tool  generate_mesh(textPrompt, segmentation, partNames, maxTriangles, studio_id)
+2026-10-31 15:09:09 [roblox] stderr: 2026-10-31T12:09:09.590541Z  WARN studio_mcp_proxy::ws_server::server: Proxy 8cac51c4-98ab-4920-8c46-3eeb9014eb7e targeted studio 38ade776-c1c2-42ef-a700-8abb2cb42cc0 which is not connected
+2026-10-31 15:10:40 <- generate_mesh (90.4s)  [SLOW]: {"generationName":"Compact stylized low-poly Roblox assault rifle prop for an R6
+2026-10-31 15:10:55 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-31 15:10:55 [roblox] stderr: 2026-10-31T12:10:55.577768Z  WARN studio_mcp_proxy::ws_server::server: Proxy 8cac51c4-98ab-4920-8c46-3eeb9014eb7e targeted studio 38ade776-c1c2-42ef-a700-8abb2cb42cc0 which is not connected
+2026-10-31 15:10:55 <- execute_luau (0.0s): {"tagged":{"1":{"boundSize":"4.000002384185791, 13.473817825317383, 31.844940185
+2026-10-31 15:17:00 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-31 15:17:00 [roblox] stderr: 2026-10-31T12:17:00.625879Z  WARN studio_mcp_proxy::ws_server::server: Proxy 8cac51c4-98ab-4920-8c46-3eeb9014eb7e targeted studio 38ade776-c1c2-42ef-a700-8abb2cb42cc0 which is not connected
+2026-10-31 15:17:00 <- execute_luau (0.2s): {"ok":true,"gunBoundSize":"0.2800000011920929, 1.8576302528381348, 1.08484840393
+2026-10-31 15:18:35 -> tool  screen_capture(capture_id, camera_position, look_at_position, studio_id)
+2026-10-31 15:18:35 [roblox] stderr: 2026-10-31T12:18:35.759294Z  WARN studio_mcp_proxy::ws_server::server: Proxy 8cac51c4-98ab-4920-8c46-3eeb9014eb7e targeted studio 38ade776-c1c2-42ef-a700-8abb2cb42cc0 which is not connected
+2026-10-31 15:18:36 <- screen_capture (0.2s): 
+2026-10-31 15:19:59 -> tool  list_roblox_studios()
+2026-10-31 15:19:59 <- list_roblox_studios (0.0s): {"studios":[{"id":"950a562d-eba7-47fa-9f6b-a30ca658f39e","name":"Place1"}]}
+2026-10-31 15:19:59 -> tool  screen_capture(capture_id, camera_position, look_at_position, studio_id)
+2026-10-31 15:19:59 <- screen_capture (0.1s): 
+2026-10-31 15:20:02 -> tool  screen_capture(capture_id, camera_position, look_at_position, studio_id)
+2026-10-31 15:20:02 <- screen_capture (0.1s): 
+2026-10-31 15:20:17 -> tool  screen_capture(capture_id, camera_position, look_at_position, studio_id)
+2026-10-31 15:20:17 <- screen_capture (0.1s): 
+2026-10-31 15:22:10 [roblox] stderr: 2026-10-31T12:22:10.783547Z  WARN studio_mcp_proxy::ws_server::server: No proxy found waiting for response init-tools-a369b54e-8f42-4031-9001-d976d511153a-d6a3ecaa-4abc-4861-99cf-1358fb0a4287
+2026-10-31 15:23:14 -> tool  list_roblox_studios()
+2026-10-31 15:23:14 <- list_roblox_studios (0.0s): {"studios":[{"id":"a369b54e-8f42-4031-9001-d976d511153a","name":"Place2"}]}
+2026-10-31 15:23:14 -> tool  execute_luau(datamodel_type, code, studio_id)
+2026-10-31 15:23:14 <- execute_luau (0.0s): PlaceId: 0 | Name: Place2 Workspace (3 items):   - Baseplate [Part]     - Textur
+2026-10-31 15:24:00 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-31 15:24:00 <- execute_luau (0.0s): {"memory":"Yok","pivot":{"1":-9,"3":11.5,"2":0,"5":0,"4":1,"7":0,"6":0,"9":0,"8"
+2026-10-31 15:24:09 -> tool  generate_mesh(textPrompt, segmentation, partNames, size, studio_id)
+2026-10-31 15:25:37 <- generate_mesh (88.5s)  [SLOW]: {"generationName":"Roblox R6 karakterinin elinde tutacağı Glock 18 tabanca mesh 
+2026-10-31 15:25:48 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-31 15:25:48 <- execute_luau (0.0s): {"1":{"class":"Camera","name":"Camera","children":[]},"3":{"class":"Model","name
+2026-10-31 15:26:23 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-31 15:26:23 <- execute_luau (0.0s): {"ok":true,"script":"Workspace.Rig.Glock18Reload","model":"Workspace.Rig.Glock18
+2026-10-31 15:28:05 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-31 15:28:05 <- execute_luau (0.0s): Edit datamodel is not available in Play mode
+2026-10-31 15:28:12 -> tool  start_stop_play(is_start, studio_id)
+2026-10-31 15:28:13 <- start_stop_play (1.1s): Game Stopped
+2026-10-31 15:28:21 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-31 15:28:21 <- execute_luau (0.0s): {"scripts":{"Workspace.Rig.Glock18Reload":"local TweenService = game:GetService(
+2026-10-31 15:28:28 -> tool  screen_capture(capture_id, camera_position, look_at_position, studio_id)
+2026-10-31 15:28:28 <- screen_capture (0.1s): 
+2026-10-31 15:30:18 -> tool  list_roblox_studios()
+2026-10-31 15:30:18 <- list_roblox_studios (0.0s): {"studios":[{"id":"a369b54e-8f42-4031-9001-d976d511153a","name":"Place2"}]}
+2026-10-31 15:30:18 -> tool  screen_capture(capture_id, camera_position, look_at_position, studio_id)
+2026-10-31 15:30:18 <- screen_capture (0.1s): 
+2026-10-31 15:32:11 -> tool  screen_capture(capture_id, camera_position, look_at_position, studio_id)
+2026-10-31 15:32:11 <- screen_capture (0.1s): 
+2026-10-31 15:33:15 Roblox Studio disconnected - re-enable its MCP server (toggle off/on).
+2026-10-31 15:33:16 Place closed (Studio app still connected).
+2026-10-31 15:33:36 Roblox Studio proxy looks stuck (known StudioMCP disconnect bug) - restarting it to recover.
+2026-10-31 15:33:36 [roblox] restarting...
+2026-10-31 15:33:36 [roblox] stdout closed (process ended, exit code None)
+2026-10-31 15:33:37 [roblox] launching  (C:\Users\pc\AppData\Local\Python\pythoncore-3.14-64\python.exe C:\Users\pc\OneDrive\Desktop\UqBOAT-v1.5.6 (1)\launch_studio_mcp.py)
+2026-10-31 15:33:37 [roblox] stderr: launch_studio_mcp: using C:\Users\pc\AppData\Local\Roblox\Versions\version-7062aec9dbe74b14\StudioMCP.exe
+2026-10-31 15:33:37 [roblox] MCP server up  (34 tools advertised)
+2026-10-31 15:35:10 Roblox Studio proxy looks stuck (known StudioMCP disconnect bug) - restarting it to recover.
+2026-10-31 15:35:10 [roblox] restarting...
+2026-10-31 15:35:10 [roblox] stdout closed (process ended, exit code None)
+2026-10-31 15:35:10 [roblox] launching  (C:\Users\pc\AppData\Local\Python\pythoncore-3.14-64\python.exe C:\Users\pc\OneDrive\Desktop\UqBOAT-v1.5.6 (1)\launch_studio_mcp.py)
+2026-10-31 15:35:10 [roblox] stderr: launch_studio_mcp: using C:\Users\pc\AppData\Local\Roblox\Versions\version-7062aec9dbe74b14\StudioMCP.exe
+2026-10-31 15:35:11 [roblox] MCP server up  (34 tools advertised)
+2026-10-31 15:36:43 Roblox Studio proxy looks stuck (known StudioMCP disconnect bug) - restarting it to recover.
+2026-10-31 15:36:43 [roblox] restarting...
+2026-10-31 15:36:43 [roblox] stdout closed (process ended, exit code None)
+2026-10-31 15:36:43 [roblox] launching  (C:\Users\pc\AppData\Local\Python\pythoncore-3.14-64\python.exe C:\Users\pc\OneDrive\Desktop\UqBOAT-v1.5.6 (1)\launch_studio_mcp.py)
+2026-10-31 15:36:43 [roblox] stderr: launch_studio_mcp: using C:\Users\pc\AppData\Local\Roblox\Versions\version-7062aec9dbe74b14\StudioMCP.exe
+2026-10-31 15:36:44 [roblox] MCP server up  (34 tools advertised)
+2026-10-31 15:37:20 extension disconnected  [0 client(s)]
+2026-10-31 15:38:16 Roblox Studio proxy looks stuck (known StudioMCP disconnect bug) - restarting it to recover.
+2026-10-31 15:38:16 [roblox] restarting...
+2026-10-31 15:38:16 [roblox] stdout closed (process ended, exit code None)
+2026-10-31 15:38:17 [roblox] launching  (C:\Users\pc\AppData\Local\Python\pythoncore-3.14-64\python.exe C:\Users\pc\OneDrive\Desktop\UqBOAT-v1.5.6 (1)\launch_studio_mcp.py)
+2026-10-31 15:38:17 [roblox] stderr: launch_studio_mcp: using C:\Users\pc\AppData\Local\Roblox\Versions\version-7062aec9dbe74b14\StudioMCP.exe
+2026-10-31 15:38:17 [roblox] MCP server up  (34 tools advertised)
+2026-10-31 15:39:50 Roblox Studio proxy looks stuck (known StudioMCP disconnect bug) - restarting it to recover.
+2026-10-31 15:39:50 [roblox] restarting...
+2026-10-31 15:39:50 [roblox] stdout closed (process ended, exit code None)
+2026-10-31 15:39:50 [roblox] launching  (C:\Users\pc\AppData\Local\Python\pythoncore-3.14-64\python.exe C:\Users\pc\OneDrive\Desktop\UqBOAT-v1.5.6 (1)\launch_studio_mcp.py)
+2026-10-31 15:39:50 [roblox] stderr: launch_studio_mcp: using C:\Users\pc\AppData\Local\Roblox\Versions\version-7062aec9dbe74b14\StudioMCP.exe
+2026-10-31 15:39:51 [roblox] MCP server up  (34 tools advertised)
+2026-10-31 15:41:23 Roblox Studio proxy looks stuck (known StudioMCP disconnect bug) - restarting it to recover.
+2026-10-31 15:41:23 [roblox] restarting...
+2026-10-31 15:41:23 [roblox] stdout closed (process ended, exit code None)
+2026-10-31 15:41:23 [roblox] launching  (C:\Users\pc\AppData\Local\Python\pythoncore-3.14-64\python.exe C:\Users\pc\OneDrive\Desktop\UqBOAT-v1.5.6 (1)\launch_studio_mcp.py)
+2026-10-31 15:41:23 [roblox] stderr: launch_studio_mcp: using C:\Users\pc\AppData\Local\Roblox\Versions\version-7062aec9dbe74b14\StudioMCP.exe
+2026-10-31 15:41:24 [roblox] MCP server up  (34 tools advertised)
+2026-10-31 15:42:56 Roblox Studio proxy looks stuck (known StudioMCP disconnect bug) - restarting it to recover.
+2026-10-31 15:42:56 [roblox] restarting...
+2026-10-31 15:42:56 [roblox] stdout closed (process ended, exit code None)
+2026-10-31 15:42:57 [roblox] launching  (C:\Users\pc\AppData\Local\Python\pythoncore-3.14-64\python.exe C:\Users\pc\OneDrive\Desktop\UqBOAT-v1.5.6 (1)\launch_studio_mcp.py)
+2026-10-31 15:42:57 [roblox] stderr: launch_studio_mcp: using C:\Users\pc\AppData\Local\Roblox\Versions\version-7062aec9dbe74b14\StudioMCP.exe
+2026-10-31 15:42:57 [roblox] MCP server up  (34 tools advertised)
+2026-10-31 15:44:29 Roblox Studio proxy looks stuck (known StudioMCP disconnect bug) - restarting it to recover.
+2026-10-31 15:44:29 [roblox] restarting...
+2026-10-31 15:44:29 [roblox] stdout closed (process ended, exit code None)
+2026-10-31 15:44:30 [roblox] launching  (C:\Users\pc\AppData\Local\Python\pythoncore-3.14-64\python.exe C:\Users\pc\OneDrive\Desktop\UqBOAT-v1.5.6 (1)\launch_studio_mcp.py)
+2026-10-31 15:44:30 [roblox] stderr: launch_studio_mcp: using C:\Users\pc\AppData\Local\Roblox\Versions\version-7062aec9dbe74b14\StudioMCP.exe
+2026-10-31 15:44:30 [roblox] MCP server up  (34 tools advertised)
+2026-10-31 15:46:03 Roblox Studio proxy looks stuck (known StudioMCP disconnect bug) - restarting it to recover.
+2026-10-31 15:46:03 [roblox] restarting...
+2026-10-31 15:46:03 [roblox] stdout closed (process ended, exit code None)
+2026-10-31 15:46:03 [roblox] launching  (C:\Users\pc\AppData\Local\Python\pythoncore-3.14-64\python.exe C:\Users\pc\OneDrive\Desktop\UqBOAT-v1.5.6 (1)\launch_studio_mcp.py)
+2026-10-31 15:46:03 [roblox] stderr: launch_studio_mcp: using C:\Users\pc\AppData\Local\Roblox\Versions\version-7062aec9dbe74b14\StudioMCP.exe
+2026-10-31 15:46:04 [roblox] MCP server up  (34 tools advertised)
+2026-10-31 15:46:26 [roblox] stdout closed (process ended, exit code None)
+2026-10-31 21:59:46 ===== BRIDGE START  v1.5.6  pid=19420  log=C:\Users\pc\OneDrive\Desktop\UqBOAT-v1.5.6 (1)\logs\bridge_debug.log =====
+2026-10-31 21:59:46 configured 1 MCP server(s): roblox
+2026-10-31 21:59:46 listening on ws://127.0.0.1:17613  - load the extension and open a supported AI chat
+2026-10-31 21:59:46 [roblox] launching  (C:\Users\pc\AppData\Local\Python\pythoncore-3.14-64\python.exe C:\Users\pc\OneDrive\Desktop\UqBOAT-v1.5.6 (1)\launch_studio_mcp.py)
+2026-10-31 21:59:46 [roblox] stderr: launch_studio_mcp: using C:\Users\pc\AppData\Local\Roblox\Versions\version-7062aec9dbe74b14\StudioMCP.exe
+2026-10-31 21:59:46 [roblox] stderr: 2026-10-31T18:59:46.483080Z  WARN studio_mcp_proxy::ws_server::server: [AUTH] Rejected WebSocket request: mode=enforce action=reject status=401 reason=no_auth_header
+2026-10-31 21:59:46 [roblox] stderr: 2026-10-31T18:59:46.483694Z  WARN studio_mcp_proxy::proxy_server::ws_client: WS host connection error: HTTP error: 401 Unauthorized
+2026-10-31 21:59:46 [roblox] stderr: 2026-10-31T18:59:46.581467Z  WARN studio_mcp_proxy::ws_server::server: [AUTH] Rejected WebSocket request: mode=enforce action=reject status=401 reason=no_auth_header
+2026-10-31 21:59:47 extension connected  (127.0.0.1)  [1 client(s)]
+2026-10-31 21:59:49 [roblox] stderr: 2026-10-31T18:59:49.885647Z  WARN studio_mcp_proxy::ws_server::server: No proxy found waiting for response init-tools-f0c4d8ff-07eb-45d1-b04c-6cc6856910c1-26db6725-fe6f-4a24-ad5a-f4743b64aee6
+2026-10-31 21:59:50 [roblox] MCP server up  (34 tools advertised)
+2026-10-31 21:59:52 ready 34 tools available - Roblox Studio connected
+2026-10-31 22:00:28 -> tool  list_roblox_studios()
+2026-10-31 22:00:28 <- list_roblox_studios (0.0s): {"studios":[{"id":"f0c4d8ff-07eb-45d1-b04c-6cc6856910c1","name":null}]}
+2026-10-31 22:00:28 -> tool  execute_luau(datamodel_type, code, studio_id)
+2026-10-31 22:00:28 <- execute_luau (0.0s): Place is not open
+2026-10-31 22:01:23 -> tool  list_roblox_studios()
+2026-10-31 22:01:23 <- list_roblox_studios (0.0s): {"studios":[{"id":"f0c4d8ff-07eb-45d1-b04c-6cc6856910c1","name":"Place1"}]}
+2026-10-31 22:01:23 -> tool  execute_luau(datamodel_type, code, studio_id)
+2026-10-31 22:01:23 <- execute_luau (0.1s): PlaceId: 0 | Name: Place1 Workspace (2 items):   - Baseplate [Part]     - Textur
+2026-10-31 22:02:11 extension disconnected  [0 client(s)]
+2026-10-31 22:04:14 [roblox] stdout closed (process ended, exit code None)
+2026-10-31 23:45:39 ===== BRIDGE START  v1.5.6  pid=17472  log=C:\Users\pc\OneDrive\Desktop\UqBOAT-v1.5.6 (1)\logs\bridge_debug.log =====
+2026-10-31 23:45:39 configured 1 MCP server(s): roblox
+2026-10-31 23:45:39 listening on ws://127.0.0.1:17613  - load the extension and open a supported AI chat
+2026-10-31 23:45:39 [roblox] launching  (C:\Users\pc\AppData\Local\Python\pythoncore-3.14-64\python.exe C:\Users\pc\OneDrive\Desktop\UqBOAT-v1.5.6 (1)\launch_studio_mcp.py)
+2026-10-31 23:45:39 [roblox] stderr: launch_studio_mcp: using C:\Users\pc\AppData\Local\Roblox\Versions\version-7062aec9dbe74b14\StudioMCP.exe
+2026-10-31 23:45:39 [roblox] MCP server up  (34 tools advertised)
+2026-10-31 23:45:39 [roblox] stderr: 2026-10-31T20:45:39.498545Z  WARN studio_mcp_proxy::ws_server::server: No proxy found waiting for response init-tools-76327aee-54df-4ebf-b383-08ae0d43178b-a12d1555-f8f0-484b-999f-7f644f102920
+2026-10-31 23:45:41 ready 34 tools available - Roblox Studio connected
+2026-10-31 23:49:11 extension connected  (127.0.0.1)  [1 client(s)]
+2026-10-31 23:49:48 -> tool  list_roblox_studios()
+2026-10-31 23:49:48 <- list_roblox_studios (0.0s): {"studios":[{"id":"76327aee-54df-4ebf-b383-08ae0d43178b","name":"Place3"}]}
+2026-10-31 23:49:48 -> tool  execute_luau(datamodel_type, code, studio_id)
+2026-10-31 23:49:48 <- execute_luau (0.0s): PlaceId: 0 | Name: Place3 Workspace (2 items):   - Baseplate [Part]     - Textur
+2026-10-31 23:50:31 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-31 23:50:31 <- execute_luau (0.0s): {"memory":"No project memory","workspace":{"1":"Camera [Camera]","4":"SpawnLocat
+2026-10-31 23:52:40 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-31 23:52:40 <- execute_luau (0.0s): {"created":"STT playable prototype","note":"Primitive graybox; Blender models an
+2026-10-31 23:52:49 -> tool  start_stop_play(is_start, studio_id)
+2026-10-31 23:52:52 <- start_stop_play (2.8s): Game Started
+2026-10-31 23:53:02 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-31 23:53:02 <- execute_luau (0.0s): {"players":{"1":{"hero":"","role":"Lobby","alive":false,"position":"520, 4, -108
+2026-10-31 23:53:09 -> tool  get_console_output(studio_id)
+2026-10-31 23:53:09 <- get_console_output (0.0s): [{"type": "text", "text": ""}]
+2026-10-31 23:53:26 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-31 23:53:26 <- execute_luau (0.0s): {"players":{"1":{"hero":"","ui":true,"rig":"Enum.HumanoidRigType.R15","role":"Su
+2026-10-31 23:53:53 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-31 23:53:53 <- execute_luau (0.0s): {"role":"Survivor","info":"ROL: HAYATTA KALAN  |  SURE: 143","button":"ATIS","no
+2026-10-31 23:54:04 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-31 23:54:04 <- execute_luau (0.0s): {"ok":true,"parts":{"1":"Head","3":"Left Arm","2":"Torso","5":"Left Leg","4":"Ri
+2026-10-31 23:54:14 -> tool  start_stop_play(is_start, studio_id)
+2026-10-31 23:54:15 <- start_stop_play (1.2s): Game Stopped
+2026-10-31 23:54:29 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-31 23:54:29 <- execute_luau (0.0s): {"ok":true,"path":"StarterPlayer.StarterCharacter","rig":"Enum.HumanoidRigType.R
+2026-10-31 23:54:36 -> tool  start_stop_play(is_start, studio_id)
+2026-10-31 23:54:39 <- start_stop_play (2.8s): Game Started
+2026-10-31 23:54:47 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-31 23:54:47 <- execute_luau (0.0s): {"role":"Lobby","health":100,"alive":false,"character":"Workspace.BabaanneZiplat
+2026-10-31 23:54:59 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-31 23:54:59 <- execute_luau (0.0s): {"ok":true,"role":"Survivor","alive":true,"bot":true,"rig":"Enum.HumanoidRigType
+2026-10-31 23:55:07 -> tool  user_keyboard_input(datamodel_type, actions, studio_id)
+2026-10-31 23:55:09 <- user_keyboard_input (1.2s): Success
+2026-10-31 23:55:17 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-31 23:55:17 <- execute_luau (0.0s): {"hero":"","bot":true,"alive":false,"health":100}
+2026-10-31 23:55:29 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-31 23:55:32 <- execute_luau (3.0s): {"hero":"","ok":true,"health":100000,"crate":"465, 2.5, -10"}
+2026-10-31 23:55:40 -> tool  user_keyboard_input(datamodel_type, actions, studio_id)
+2026-10-31 23:55:41 <- user_keyboard_input (1.2s): Success
+2026-10-31 23:55:49 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-10-31 23:55:49 <- execute_luau (0.0s): {"hero":"","role":"Survivor","health":100000,"alive":true,"pos":"461.92660522460
+2026-10-31 23:55:58 -> tool  screen_capture(capture_id, studio_id)
+2026-10-31 23:55:58 <- screen_capture (0.1s): 
+2026-11-01 00:02:30 -> tool  get_console_output(studio_id)
+2026-11-01 00:02:30 <- get_console_output (0.0s): [{"type": "text", "text": ""}]
+2026-11-01 00:02:40 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-11-01 00:02:40 <- execute_luau (0.0s): Client datamodel is not available in Edit mode
+2026-11-01 00:02:47 -> tool  get_studio_state(studio_id)
+2026-11-01 00:02:47 <- get_studio_state (0.0s): - Current Studio Mode: Edit - Available DataModels: Edit - Focused DataModel in 
+2026-11-01 00:02:58 -> tool  start_stop_play(is_start, studio_id)
+2026-11-01 00:03:00 <- start_stop_play (2.7s): Game Started
+2026-11-01 00:03:10 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-11-01 00:03:12 <- execute_luau (2.0s): {"ok":true,"role":"Survivor","hero":"","rig":"Enum.HumanoidRigType.R6"}
+2026-11-01 00:03:21 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-11-01 00:03:22 <- execute_luau (1.6s): {"ok":true,"distance":3.77006459236145,"hero":"Starlight","role":"Survivor"}
+2026-11-01 00:03:32 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-11-01 00:03:32 <- execute_luau (0.0s): {"broken":false,"target":"505, 5.5, -35","alive":true,"ok":true}
+2026-11-01 00:03:40 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-11-01 00:03:41 <- execute_luau (1.0s): {"broken":false,"transparency":0.41999998688697817,"canCollide":true}
+2026-11-01 00:03:52 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-11-01 00:03:52 <- execute_luau (0.0s): {"ok":true,"role":"Survivor","alive":true,"origin":"505, 4.5106658935546875, -28
+2026-11-01 00:04:01 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-11-01 00:04:02 <- execute_luau (0.0s): Server datamodel is not available in Edit mode
+2026-11-01 00:04:13 -> tool  start_stop_play(is_start, studio_id)
+2026-11-01 00:04:16 <- start_stop_play (2.7s): Game Started
+2026-11-01 00:04:28 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-11-01 00:04:28 <- execute_luau (0.0s): {"ok":true,"role":"Survivor","bot":"580, 7, 60","pane":"505, 5.5, -35"}
+2026-11-01 00:04:37 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-11-01 00:04:38 <- execute_luau (0.8s): {"broken":true,"transparency":1,"canCollide":false}
+2026-11-01 00:04:49 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-11-01 00:04:50 <- execute_luau (1.7s): {"slide":{"speed":29,"hip":-0.6000000238418579},"after":{"speed":16,"hip":0},"cr
+2026-11-01 00:05:08 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-11-01 00:05:08 <- execute_luau (0.0s): {"bot":{"defeated":false,"health":700},"character":{"alive":true,"role":"Survivo
+2026-11-01 00:05:17 -> tool  start_stop_play(is_start, studio_id)
+2026-11-01 00:05:18 <- start_stop_play (1.0s): Game Stopped
+2026-11-01 00:05:49 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-11-01 00:05:49 <- execute_luau (0.0s): {"ok":true,"note":"Asset access and visual quality require Studio validation.","
+2026-11-01 00:05:59 -> tool  script_read(target_file, should_read_entire_file, studio_id)
+2026-11-01 00:05:59 <- script_read (0.0s):      1→local Players = game:GetService("Players")      2→local RS = game:GetServ
+2026-11-01 00:06:20 -> tool  multi_edit(datamodel_type, file_path, edits, studio_id)
+2026-11-01 00:06:20 <- multi_edit (0.0s): Modified STT_Server (Script) with 4 edits applied
+2026-11-01 00:06:30 -> tool  start_stop_play(is_start, studio_id)
+2026-11-01 00:06:33 <- start_stop_play (2.7s): Game Started
+2026-11-01 00:06:44 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-11-01 00:06:46 <- execute_luau (2.0s): {"ok":true,"simulatedWin":true,"wins":1,"coins":50,"rig":"Enum.HumanoidRigType.R
+2026-11-01 00:06:55 -> tool  start_stop_play(is_start, studio_id)
+2026-11-01 00:06:56 <- start_stop_play (1.0s): Game Stopped
+2026-11-01 00:07:08 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-11-01 00:07:08 <- execute_luau (0.0s): {"ok":true,"updated":"Proje sistemleri ve test sinirlari"}
+2026-11-01 00:42:32 -> tool  list_roblox_studios()
+2026-11-01 00:42:32 <- list_roblox_studios (0.0s): {"studios":[{"id":"76327aee-54df-4ebf-b383-08ae0d43178b","name":"Place3"}]}
+2026-11-01 00:42:32 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-11-01 00:42:32 <- execute_luau (0.0s): {"map":{"1":"Arena [Folder]","8":"LobbySign [Part]","3":"Loot [Folder]","2":"Bre
+2026-11-01 00:43:22 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-11-01 00:43:34 <- execute_luau (11.2s)  [SLOW]: {"ok":false,"restoreError":"","bytes":0,"error":"HttpError: DnsResolve","httpRes
+2026-11-01 00:45:11 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-11-01 00:45:11 <- execute_luau (0.0s): {"ok":true,"note":"Map2 mevcut tesis geometrisinin kirmizi karargah varyantidir;
+2026-11-01 00:45:19 -> tool  script_read(target_file, should_read_entire_file, studio_id)
+2026-11-01 00:45:19 <- script_read (0.0s):      1→local Players = game:GetService("Players")      2→local RS = game:GetServ
+2026-11-01 00:45:48 -> tool  multi_edit(datamodel_type, file_path, edits, studio_id)
+2026-11-01 00:45:48 <- multi_edit (0.0s): Modified STT_Server (Script) with 9 edits applied
+2026-11-01 00:45:56 -> tool  start_stop_play(is_start, studio_id)
+2026-11-01 00:45:58 <- start_stop_play (1.0s): Game Started
+2026-11-01 00:46:07 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-11-01 00:46:07 <- execute_luau (0.0s): Client datamodel is not available in Edit mode
+2026-11-01 00:46:15 -> tool  get_studio_state(studio_id)
+2026-11-01 00:46:15 <- get_studio_state (0.0s): - Current Studio Mode: Edit - Available DataModels: Edit - Focused DataModel in 
+2026-11-01 00:46:24 -> tool  start_stop_play(is_start, studio_id)
+2026-11-01 00:46:27 <- start_stop_play (2.9s): Game Started
+2026-11-01 00:46:36 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-11-01 00:46:36 <- execute_luau (0.5s): {"tesis":"0 OY","phase":"Lobby","selected":"Karargah","open":true,"karargah":"1 
+2026-11-01 00:46:47 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-11-01 00:46:47 <- execute_luau (0.0s): {"botPosition":"885.1353759765625, 7, -54.75217056274414","role":"Survivor","pos
+2026-11-01 00:47:00 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-11-01 00:47:00 <- execute_luau (0.0s): {"broken":false,"ok":true,"pane":"835, 5.5, -35"}
+2026-11-01 00:47:15 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-11-01 00:47:15 <- execute_luau (0.8s): {"broken":false,"transparency":0.41999998688697817,"menuOpen":false,"canCollide"
+2026-11-01 00:47:26 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-11-01 00:47:26 <- execute_luau (0.0s): Server datamodel is not available in Edit mode
+2026-11-01 00:47:56 extension disconnected  [0 client(s)]
+2026-11-01 00:48:03 [roblox] stderr: 2026-10-31T21:48:03.821500Z  WARN studio_mcp_proxy::ws_server::server: No proxy found waiting for response init-tools-71ffc8d2-187d-4728-ac9d-32952a6c2ce3-214fc313-b52a-434a-bd49-ccb76efa5143
+2026-11-01 00:55:04 [roblox] stderr: 2026-10-31T21:55:04.329381Z  WARN studio_mcp_proxy::ws_server::server: No proxy found waiting for response init-tools-74a36fc6-4b23-4ab8-ac09-96aa437e0c1e-20aa7971-38d3-40cc-a9bf-340a4dad0333
+2026-11-01 00:57:01 [roblox] stdout closed (process ended, exit code None)
+2026-11-01 01:24:51 ===== BRIDGE START  v1.5.6  pid=12740  log=C:\Users\pc\OneDrive\Desktop\UqBOAT-v1.5.6 (1)\logs\bridge_debug.log =====
+2026-11-01 01:24:52 configured 1 MCP server(s): roblox
+2026-11-01 01:24:52 listening on ws://127.0.0.1:17613  - load the extension and open a supported AI chat
+2026-11-01 01:24:52 [roblox] launching  (C:\Users\pc\AppData\Local\Python\pythoncore-3.14-64\python.exe C:\Users\pc\OneDrive\Desktop\UqBOAT-v1.5.6 (1)\launch_studio_mcp.py)
+2026-11-01 01:24:52 [roblox] stderr: launch_studio_mcp: using C:\Users\pc\AppData\Local\Roblox\Versions\version-7062aec9dbe74b14\StudioMCP.exe
+2026-11-01 01:24:52 [roblox] MCP server up  (34 tools advertised)
+2026-11-01 01:25:00     34 Roblox tools loaded, but NO Roblox Studio is connected yet.
+2026-11-01 01:25:00     (This can be a slow attach that clears itself within ~10-15s -
+2026-11-01 01:25:00     watch for a green 'Roblox Studio connected' line right after.)
+2026-11-01 01:25:00 ACTION NEEDED: Open your place in Roblox Studio. | Go to: Assistant Settings > MCP Servers |        > 'Enable Studio as MCP server' | It can take up to ~10s; this window will turn green.
+2026-11-01 01:25:16 [roblox] stderr: 2026-10-31T22:25:16.153213Z  WARN studio_mcp_proxy::ws_server::server: No proxy found waiting for response init-tools-f30d5e54-a949-4cc3-864b-4145a1be94e9-ef275e66-03cd-4d31-b2d9-565477d0abc7
+2026-11-01 01:25:16 Roblox Studio connected - 34 tools ready.
+2026-11-01 01:25:17 Place loaded in Studio.
+2026-11-01 01:26:17 extension connected  (127.0.0.1)  [1 client(s)]
+2026-11-01 01:26:25 -> tool  list_roblox_studios()
+2026-11-01 01:26:25 <- list_roblox_studios (0.0s): {"studios":[{"id":"f30d5e54-a949-4cc3-864b-4145a1be94e9","name":"Place1"}]}
+2026-11-01 01:26:25 -> tool  execute_luau(datamodel_type, code, studio_id)
+2026-11-01 01:26:25 <- execute_luau (0.1s): PlaceId: 0 | Name: Place1 Workspace (2 items):   - Baseplate [Part]     - Textur
+2026-11-01 01:26:39 -> tool  list_roblox_studios()
+2026-11-01 01:26:39 <- list_roblox_studios (0.0s): {"studios":[{"id":"f30d5e54-a949-4cc3-864b-4145a1be94e9","name":"Place1"}]}
+2026-11-01 01:26:39 -> tool  execute_luau(datamodel_type, code, studio_id)
+2026-11-01 01:26:39 <- execute_luau (0.1s): PlaceId: 0 | Name: Place1 Workspace (2 items):   - Baseplate [Part]     - Textur
+2026-11-01 01:37:13 -> tool  http_get(url, studio_id)
+2026-11-01 01:37:13 <- http_get (0.0s): URL not allowed. Only these patterns are permitted: - https://create.roblox.com/
+2026-11-01 01:38:34 -> tool  http_get(url, studio_id)
+2026-11-01 01:38:34 <- http_get (0.0s): URL not allowed. Only these patterns are permitted: - https://create.roblox.com/
+2026-11-01 01:39:18 extension disconnected  [0 client(s)]
+2026-11-01 01:40:34 extension connected  (127.0.0.1)  [1 client(s)]
+2026-11-01 01:45:11 -> tool  list_roblox_studios()
+2026-11-01 01:45:11 <- list_roblox_studios (0.0s): {"studios":[{"id":"f30d5e54-a949-4cc3-864b-4145a1be94e9","name":"Place1"}]}
+2026-11-01 01:45:11 -> tool  script_read(target_file, studio_id)
+2026-11-01 01:45:12 <- script_read (0.0s): sabuiltin_Assistant.rbxm.Assistant.Packages._Index.AssistantUI.AssistantUI.Tools
+2026-11-01 01:45:19 -> tool  multi_edit(datamodel_type, file_path, className, edits, studio_id)
+2026-11-01 01:45:19 <- multi_edit (0.0s): Created Memory (ModuleScript) with 1 edits applied
+2026-11-01 01:45:24 -> tool  search_game_tree(datamodel_type, path, max_depth, studio_id)
+2026-11-01 01:45:24 <- search_game_tree (0.0s): [{"parentName":"Place1","fullPath":"ServerScriptService","name":"ServerScriptSer
+2026-11-01 01:45:30 -> tool  script_read(target_file, studio_id)
+2026-11-01 01:45:30 <- script_read (0.0s):      1→--!nonstrict      2→--[[      3→	StudUI - Stud UI Clean Roblox kit for Ro
+2026-11-01 01:45:47 -> tool  script_read(target_file, studio_id)
+2026-11-01 01:45:47 <- script_read (0.0s):      1→return [==[      2→# Project memory      3→## Overview      4→Cartoon, hi
+2026-11-01 01:45:56 -> tool  script_read(target_file, should_read_entire_file, start_line_one_indexed, end_line_one_indexed_inclusive, studio_id)
+2026-11-01 01:45:56 <- script_read (0.0s):      1→--!nonstrict      2→--[[      3→	StudMotion - motion, sound and responsiv
+2026-11-01 01:46:02 -> tool  script_read(target_file, should_read_entire_file, start_line_one_indexed, end_line_one_indexed_inclusive, studio_id)
+2026-11-01 01:46:02 <- script_read (0.0s):      1→--!strict      2→-- Check-UI Clean Roblox Icon Registry      3→-- Product
+2026-11-01 01:46:12 -> tool  generate_scene(textPrompt, studio_id)
+2026-11-01 01:47:52 -> tool  search_game_tree(datamodel_type, path, max_depth, head_limit, studio_id)
+2026-11-01 01:48:12 <- generate_scene (120.0s)  [SLOW]: No response from server 'roblox' after 120.0s.
+2026-11-01 01:48:12 <- search_game_tree (20.0s)  [SLOW]: [{"parentName":"Place1","fullPath":"Workspace","name":"Workspace","className":"W
+2026-11-01 01:48:20 -> tool  generate_scene(textPrompt, studio_id)
+2026-11-01 01:50:20 <- generate_scene (120.0s)  [SLOW]: No response from server 'roblox' after 120.0s.
+2026-11-01 01:50:38 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-11-01 01:50:38 <- execute_luau (0.1s): sabuiltin_Assistant.rbxm.Assistant.Packages._Index.AssistantUI.AssistantUI.Tools
+2026-11-01 01:50:48 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-11-01 01:50:48 <- execute_luau (0.1s): Created biome road foundations
+2026-11-01 01:51:01 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-11-01 01:51:01 <- execute_luau (0.1s): Added cartoon biome scenery
+2026-11-01 01:51:35 -> tool  multi_edit(datamodel_type, file_path, edits, studio_id)
+2026-11-01 01:51:35 <- multi_edit (0.0s): Modified Memory (ModuleScript) with 2 edits applied
+2026-11-01 01:51:48 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-11-01 01:51:49 <- execute_luau (0.1s): Created remotes and prototype HUD
+2026-11-01 01:52:08 -> tool  multi_edit(datamodel_type, file_path, className, edits, studio_id)
+2026-11-01 01:52:08 <- multi_edit (0.0s): Created RockKickServer (Script) with 1 edits applied
+2026-11-01 01:52:23 -> tool  multi_edit(datamodel_type, file_path, className, edits, studio_id)
+2026-11-01 01:52:23 <- multi_edit (0.0s): Created RockKickClient (LocalScript) with 1 edits applied
+2026-11-01 01:52:36 -> tool  multi_edit(datamodel_type, file_path, edits, studio_id)
+2026-11-01 01:52:36 <- multi_edit (0.0s): Modified Memory (ModuleScript) with 2 edits applied
+2026-11-01 01:52:44 -> tool  start_stop_play(is_start, studio_id)
+2026-11-01 01:52:47 <- start_stop_play (2.9s): Game Started
+2026-11-01 01:52:55 -> tool  get_console_output(studio_id)
+2026-11-01 01:52:55 <- get_console_output (0.0s): [{"type": "text", "text": ""}]
+2026-11-01 01:53:02 -> tool  start_stop_play(is_start, studio_id)
+2026-11-01 01:53:03 <- start_stop_play (1.1s): Game Stopped
+2026-11-01 01:54:50 -> tool  search_asset(scope, query, assetType, maxResults, studio_id)
+2026-11-01 01:54:50 <- search_asset (0.4s): {"scope":"creator_store","nextSteps":["Review the results and choose the best as
+2026-11-01 01:55:02 -> tool  screen_capture(capture_id, studio_id)
+2026-11-01 01:55:02 <- screen_capture (0.4s): 
+2026-11-01 01:55:16 -> tool  search_game_tree(datamodel_type, path, max_depth, head_limit, studio_id)
+2026-11-01 01:55:16 <- search_game_tree (0.0s): Note: Output limited to 120 nodes (results truncated)  [{"parentName":"Place1","
+2026-11-01 01:55:56 [roblox] stderr: 2026-10-31T22:55:56.229716Z  WARN studio_mcp_proxy::ws_server::server: No proxy found waiting for response init-tools-c1bc3a47-a614-49ac-9fd1-69f86052ba12-b903553e-48ef-4c17-b4bb-be213ced3060
+2026-11-01 01:55:58 Roblox Studio disconnected - re-enable its MCP server (toggle off/on).
+2026-11-01 01:55:59 Place closed (Studio app still connected).
+2026-11-01 01:56:07 extension disconnected  [0 client(s)]
+2026-11-01 01:56:19 Roblox Studio proxy looks stuck (known StudioMCP disconnect bug) - restarting it to recover.
+2026-11-01 01:56:19 [roblox] restarting...
+2026-11-01 01:56:20 [roblox] stdout closed (process ended, exit code None)
+2026-11-01 01:56:20 [roblox] found dead - auto-restarting...
+2026-11-01 01:56:20 [roblox] launching  (C:\Users\pc\AppData\Local\Python\pythoncore-3.14-64\python.exe C:\Users\pc\OneDrive\Desktop\UqBOAT-v1.5.6 (1)\launch_studio_mcp.py)
+2026-11-01 01:56:20 [roblox] stderr: launch_studio_mcp: using C:\Users\pc\AppData\Local\Roblox\Versions\version-7062aec9dbe74b14\StudioMCP.exe
+2026-11-01 01:56:20 [roblox] MCP server up  (34 tools advertised)
+2026-11-01 01:57:53 Roblox Studio proxy looks stuck (known StudioMCP disconnect bug) - restarting it to recover.
+2026-11-01 01:57:53 [roblox] restarting...
+2026-11-01 01:57:53 [roblox] stdout closed (process ended, exit code None)
+2026-11-01 01:57:53 [roblox] launching  (C:\Users\pc\AppData\Local\Python\pythoncore-3.14-64\python.exe C:\Users\pc\OneDrive\Desktop\UqBOAT-v1.5.6 (1)\launch_studio_mcp.py)
+2026-11-01 01:57:53 [roblox] stderr: launch_studio_mcp: using C:\Users\pc\AppData\Local\Roblox\Versions\version-7062aec9dbe74b14\StudioMCP.exe
+2026-11-01 01:57:54 [roblox] MCP server up  (34 tools advertised)
