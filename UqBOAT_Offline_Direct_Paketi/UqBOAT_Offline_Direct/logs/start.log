@@ -1,0 +1,6 @@
+===== Paz 01.11.2026  2:14:31,95  start.bat launched =====
+Microsoft Windows [Version 10.0.26200.9711]
+Python found: py -3 (Python 3.14.2)
+websockets library OK
+Killing previous bridge instance (pid 12740) on port 17613.
+Launching bridge.py with py -3

@@ -1,0 +1,167 @@
+2026-11-01 02:14:33 ===== BRIDGE START  v1.5.6.1  pid=10356  log=C:\Users\pc\OneDrive\Desktop\UqBOAT_Offline_Direct_Paketi\UqBOAT_Offline_Direct\logs\bridge_debug.log =====
+2026-11-01 02:14:33 configured 1 MCP server(s): roblox
+2026-11-01 02:14:33 listening on ws://127.0.0.1:17613  - load the extension and open a supported AI chat
+2026-11-01 02:14:33 [roblox] launching  (C:\Users\pc\AppData\Local\Python\pythoncore-3.14-64\python.exe C:\Users\pc\OneDrive\Desktop\UqBOAT_Offline_Direct_Paketi\UqBOAT_Offline_Direct\launch_studio_mcp.py)
+2026-11-01 02:14:33 [roblox] stderr: launch_studio_mcp: using C:\Users\pc\AppData\Local\Roblox\Versions\version-7062aec9dbe74b14\StudioMCP.exe
+2026-11-01 02:14:34 [roblox] MCP server up  (34 tools advertised)
+2026-11-01 02:14:36 [roblox] stderr: 2026-10-31T23:14:36.094232Z  WARN studio_mcp_proxy::ws_server::server: No proxy found waiting for response init-tools-2604f67c-4615-4422-a7e0-168caae5d85a-866e36fa-daa1-43ea-bd07-342bea2c8700
+2026-11-01 02:14:37 ready 34 tools available - Roblox Studio connected
+2026-11-01 02:15:04 extension connected  (127.0.0.1)  [1 client(s)]
+2026-11-01 02:15:59 -> tool  list_roblox_studios()
+2026-11-01 02:15:59 <- list_roblox_studios (0.0s): {"studios":[{"id":"2604f67c-4615-4422-a7e0-168caae5d85a","name":"Place1"}]}
+2026-11-01 02:16:05 -> tool  list_skills(studio_id)
+2026-11-01 02:16:05 <- list_skills (0.0s): <available_skills>   <skill>     <name>rbx-configs-experimentation</name>     <s
+2026-11-01 02:16:56 -> tool  script_read(target_file, studio_id)
+2026-11-01 02:16:56 <- script_read (0.0s): sabuiltin_Assistant.rbxm.Assistant.Packages._Index.AssistantUI.AssistantUI.Tools
+2026-11-01 02:17:25 -> tool  multi_edit(studio_id, datamodel_type, file_path, className, edits)
+2026-11-01 02:17:25 <- multi_edit (0.0s): Created Memory (ModuleScript) with 1 edits applied
+2026-11-01 02:17:59 -> tool  search_game_tree(studio_id, datamodel_type, path, max_depth)
+2026-11-01 02:17:59 <- search_game_tree (0.0s): [{"parentName":"Place1","fullPath":"StarterGui","name":"StarterGui","className":
+2026-11-01 02:18:27 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-11-01 02:18:27 <- execute_luau (0.1s): Created StarterGui.StudShop with three sample products.
+2026-11-01 02:18:39 -> tool  multi_edit(studio_id, datamodel_type, file_path, className, edits)
+2026-11-01 02:18:39 <- multi_edit (0.0s): Created ShopController (LocalScript) with 1 edits applied
+2026-11-01 02:20:41 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-11-01 02:20:41 <- execute_luau (0.1s): StudShop bulunamadı.
+2026-11-01 02:20:48 -> tool  search_game_tree(studio_id, datamodel_type, path, max_depth)
+2026-11-01 02:20:48 <- search_game_tree (0.0s): [{"parentName":"Place1","fullPath":"StarterGui","name":"StarterGui","className":
+2026-11-01 02:21:29 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-11-01 02:21:29 <- execute_luau (0.1s): Created StarterGui.NestShopReference.
+2026-11-01 02:21:42 -> tool  multi_edit(studio_id, datamodel_type, file_path, className, edits)
+2026-11-01 02:21:42 <- multi_edit (0.0s): Created Controller (LocalScript) with 1 edits applied
+2026-11-01 02:23:01 -> tool  script_read(target_file, studio_id)
+2026-11-01 02:23:01 <- script_read (0.0s):      1→return [==[      2→# Project memory      3→## Overview      4→## Where th
+2026-11-01 02:23:07 -> tool  search_game_tree(datamodel_type, path, max_depth, studio_id)
+2026-11-01 02:23:07 <- search_game_tree (0.0s): [{"parentName":"Place1","fullPath":"StarterGui","name":"StarterGui","className":
+2026-11-01 02:24:30 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-11-01 02:24:30 <- execute_luau (0.1s): Added reference top, left and money HUD with bundled reference asset IDs.
+2026-11-01 02:25:08 -> tool  script_read(studio_id, target_file)
+2026-11-01 02:25:08 <- script_read (0.0s):      1→local TweenService = game:GetService("TweenService")      2→local gui = s
+2026-11-01 02:25:42 -> tool  multi_edit(studio_id, datamodel_type, file_path, edits)
+2026-11-01 02:25:42 <- multi_edit (0.0s): Modified Controller (LocalScript) with 1 edits applied
+2026-11-01 02:25:48 -> tool  start_stop_play(studio_id, is_start)
+2026-11-01 02:25:51 <- start_stop_play (2.8s): Game Started
+2026-11-01 02:25:58 -> tool  get_console_output(studio_id)
+2026-11-01 02:25:58 <- get_console_output (0.0s): [{"type": "text", "text": ""}]
+2026-11-01 02:26:04 -> tool  start_stop_play(studio_id, is_start)
+2026-11-01 02:26:05 <- start_stop_play (1.0s): Game Stopped
+2026-11-01 02:26:50 -> tool  start_stop_play(is_start, studio_id)
+2026-11-01 02:26:52 <- start_stop_play (2.8s): Game Started
+2026-11-01 02:27:14 -> tool  user_mouse_input(datamodel_type, studio_id, actions)
+2026-11-01 02:27:15 <- user_mouse_input (0.6s): Success
+2026-11-01 02:27:21 -> tool  screen_capture(capture_id, studio_id)
+2026-11-01 02:27:21 <- screen_capture (0.1s): 
+2026-11-01 02:27:37 -> tool  start_stop_play(is_start, studio_id)
+2026-11-01 02:27:38 <- start_stop_play (1.0s): Game Stopped
+2026-11-01 02:28:02 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-11-01 02:28:02 <- execute_luau (0.1s): Repaired invisible tile labels, replaced unavailable basket and factory image wi
+2026-11-01 02:28:09 -> tool  start_stop_play(is_start, studio_id)
+2026-11-01 02:28:12 <- start_stop_play (2.7s): Game Started
+2026-11-01 02:28:34 -> tool  user_mouse_input(datamodel_type, studio_id, actions)
+2026-11-01 02:28:34 <- user_mouse_input (0.6s): Success
+2026-11-01 02:28:41 -> tool  screen_capture(capture_id, studio_id)
+2026-11-01 02:28:41 <- screen_capture (0.2s): 
+2026-11-01 02:29:50 -> tool  start_stop_play(is_start, studio_id)
+2026-11-01 02:29:51 <- start_stop_play (1.0s): Game Stopped
+2026-11-01 02:35:19 -> tool  search_game_tree(datamodel_type, path, max_depth, studio_id)
+2026-11-01 02:35:19 <- search_game_tree (0.0s): [{"parentName":"Place1","fullPath":"Workspace","name":"Workspace","className":"W
+2026-11-01 02:35:27 -> tool  generate_mesh(studio_id, textPrompt, segmentation, size, async)
+2026-11-01 02:35:27 <- generate_mesh (0.0s): {"jobId":"7a68eec7-d597-4915-bdc7-b46db256b368","status":"Running"}
+2026-11-01 02:36:09 -> tool  wait_job_finished(jobId, timeout, studio_id)
+2026-11-01 02:36:42 <- wait_job_finished (33.0s)  [SLOW]: {"status":"Completed","jobResult":{"structuredContent":{"generationId":"59ebd7c9
+2026-11-01 02:36:49 -> tool  search_game_tree(datamodel_type, path, max_depth, studio_id)
+2026-11-01 02:36:49 <- search_game_tree (0.0s): [{"parentName":"Place1","fullPath":"Workspace","name":"Workspace","className":"W
+2026-11-01 02:39:10 -> tool  inspect_instance(studio_id, path)
+2026-11-01 02:39:10 <- inspect_instance (0.0s): {"path":"Workspace.Baseplate","name":"Baseplate","className":"Part","uniqueId":"
+2026-11-01 02:39:17 -> tool  inspect_instance(studio_id, path)
+2026-11-01 02:39:17 <- inspect_instance (0.0s): {"path":"Workspace.A large modern shopping mall building, welcoming entrance wit
+2026-11-01 02:39:51 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-11-01 02:39:51 <- execute_luau (0.1s): PlayableMall created at x=400, with interior, shops, second floor, stairs, skyli
+2026-11-01 02:39:58 -> tool  start_stop_play(is_start, studio_id)
+2026-11-01 02:40:01 <- start_stop_play (2.9s): Game Started
+2026-11-01 02:40:28 -> tool  screen_capture(capture_id, studio_id)
+2026-11-01 02:40:29 <- screen_capture (0.3s): 
+2026-11-01 02:40:48 -> tool  start_stop_play(is_start, studio_id)
+2026-11-01 02:40:49 <- start_stop_play (1.1s): Game Stopped
+2026-11-01 02:42:10 -> tool  start_stop_play(is_start, studio_id)
+2026-11-01 02:42:12 <- start_stop_play (1.0s): Game Stopped
+2026-11-01 02:43:41 -> tool  generate_scene(studio_id, boundingBoxPosition, boundingBoxSize, textPrompt)
+2026-11-01 02:45:41 <- generate_scene (120.0s)  [SLOW]: No response from server 'roblox' after 120.0s.
+2026-11-01 02:45:55 -> tool  search_game_tree(studio_id, datamodel_type, path, max_depth)
+2026-11-01 02:45:55 <- search_game_tree (0.0s): [{"parentName":"Place1","fullPath":"Workspace","name":"Workspace","className":"W
+2026-11-01 02:46:10 -> tool  generate_scene(studio_id, boundingBoxPosition, boundingBoxSize, textPrompt)
+2026-11-01 02:48:10 <- generate_scene (120.0s)  [SLOW]: No response from server 'roblox' after 120.0s.
+2026-11-01 02:50:45 [roblox] stderr: 2026-10-31T23:50:45.297205Z  WARN studio_mcp_proxy::ws_server::server: No proxy found waiting for response init-tools-c0ce14da-73c7-44aa-a20d-23151e40d140-8e49336f-76bb-4434-b427-8c54dbeb5910
+2026-11-01 02:51:33 -> tool  script_read(target_file, studio_id)
+2026-11-01 02:51:33 [roblox] stderr: 2026-10-31T23:51:33.522662Z  WARN studio_mcp_proxy::ws_server::server: Proxy 8fbd1aea-4b7e-4f08-a098-3b3665c665f3 targeted studio 2604f67c-4615-4422-a7e0-168caae5d85a which is not connected
+2026-11-01 02:51:33 <- script_read (0.1s): sabuiltin_Assistant.rbxm.Assistant.Packages._Index.AssistantUI.AssistantUI.Tools
+2026-11-01 02:56:53 -> tool  list_skills(studio_id)
+2026-11-01 02:56:53 [roblox] stderr: 2026-10-31T23:56:53.852882Z  WARN studio_mcp_proxy::ws_server::server: Proxy 8fbd1aea-4b7e-4f08-a098-3b3665c665f3 targeted studio 2604f67c-4615-4422-a7e0-168caae5d85a which is not connected
+2026-11-01 02:56:53 <- list_skills (0.1s): <available_skills>   <skill>     <name>rbx-configs-experimentation</name>     <s
+2026-11-01 02:59:09 -> tool  script_read(target_file, studio_id)
+2026-11-01 02:59:09 [roblox] stderr: 2026-10-31T23:59:09.922119Z  WARN studio_mcp_proxy::ws_server::server: Proxy 8fbd1aea-4b7e-4f08-a098-3b3665c665f3 targeted studio 2604f67c-4615-4422-a7e0-168caae5d85a which is not connected
+2026-11-01 02:59:09 <- script_read (0.1s): sabuiltin_Assistant.rbxm.Assistant.Packages._Index.AssistantUI.AssistantUI.Tools
+2026-11-01 02:59:43 -> tool  multi_edit(file_path, className, datamodel_type, edits, studio_id)
+2026-11-01 02:59:43 [roblox] stderr: 2026-10-31T23:59:43.280022Z  WARN studio_mcp_proxy::ws_server::server: Proxy 8fbd1aea-4b7e-4f08-a098-3b3665c665f3 targeted studio 2604f67c-4615-4422-a7e0-168caae5d85a which is not connected
+2026-11-01 02:59:43 <- multi_edit (0.1s): Created Memory (ModuleScript) with 1 edits applied
+2026-11-01 03:02:03 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-11-01 03:02:03 [roblox] stderr: 2026-11-01T00:02:03.751059Z  WARN studio_mcp_proxy::ws_server::server: Proxy 8fbd1aea-4b7e-4f08-a098-3b3665c665f3 targeted studio 2604f67c-4615-4422-a7e0-168caae5d85a which is not connected
+2026-11-01 03:02:03 <- execute_luau (0.1s): StudUI installed: 24758 chars
+2026-11-01 03:07:56 -> tool  list_roblox_studios()
+2026-11-01 03:07:56 <- list_roblox_studios (0.0s): {"studios":[{"id":"c0ce14da-73c7-44aa-a20d-23151e40d140","name":"Place2"}]}
+2026-11-01 03:07:56 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-11-01 03:07:56 <- execute_luau (0.1s): StudMotion YOK
+2026-11-01 03:08:22 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-11-01 03:08:22 <- execute_luau (0.1s): StudMotion installed: 7636 chars
+2026-11-01 03:08:36 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-11-01 03:08:36 <- execute_luau (0.1s): KEYS: Assets, Button, ButtonThemes, CloseButton, Colors, Corner, Fonts, Gradient
+2026-11-01 03:08:53 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-11-01 03:08:53 <- execute_luau (0.1s): BUILD OK, 204 descendants MenuNestShop.Sons [Folder] MenuNestShop.Basculer [Bind
+2026-11-01 03:09:21 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-11-01 03:09:21 <- execute_luau (0.1s): OK: Toggle + Controleur kuruldu, 1802 chars
+2026-11-01 03:09:31 -> tool  screen_capture(studio_id)
+2026-11-01 03:09:31 <- screen_capture (0.0s): Missing required argument: capture_id
+2026-11-01 03:09:58 -> tool  screen_capture(capture_id, studio_id)
+2026-11-01 03:09:59 <- screen_capture (0.6s): 
+2026-11-01 03:10:45 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-11-01 03:10:45 <- execute_luau (0.1s): TOGGLE Bouton [ImageButton] Pos={0, 20}, {1, -80} Anchor=0.5, 0.5 Size={0, 150},
+2026-11-01 03:10:58 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-11-01 03:10:58 <- execute_luau (0.1s): Toggle Pos={0, 95}, {1, -50} | Fenetre gecici gorunur
+2026-11-01 03:11:35 -> tool  screen_capture(capture_id, studio_id)
+2026-11-01 03:11:35 <- screen_capture (0.5s): 
+2026-11-01 03:12:06 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-11-01 03:12:06 <- execute_luau (0.1s): Toplam resim: 14 Fenetre.Corps.Liste.Carte_Niv1.Panneau | Image=rbxassetid://892
+2026-11-01 03:12:20 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-11-01 03:12:20 <- execute_luau (0.4s): rbxassetid://89267995407736 | callback=Enum.AssetFetchStatus.Failure | fetch=Enu
+2026-11-01 03:12:37 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-11-01 03:12:40 <- execute_luau (3.5s): rbxassetid://140544932962041 | Enum.AssetFetchStatus.Failure rbxassetid://130563
+2026-11-01 03:12:54 -> tool  search_asset(query, assetType, scope, maxResults, studio_id)
+2026-11-01 03:12:54 <- search_asset (0.4s): {"scope":"creator_store","nextSteps":["Review the results and choose the best as
+2026-11-01 03:13:04 -> tool  insert_asset(assetId, assetType, assetName, parentPath, studio_id)
+2026-11-01 03:13:04 <- insert_asset (0.3s): {"insertGuid":"788971cb-a330-4244-8543-e2048d72cc84","insertedInstances":[{"full
+2026-11-01 03:13:15 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-11-01 03:13:15 <- execute_luau (0.6s): Texture=rbxassetid://113974797594633 Texture yukleme: Enum.AssetFetchStatus.Fail
+2026-11-01 03:13:32 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-11-01 03:13:39 <- execute_luau (7.5s)  [SLOW]: 113974797594633 ham=Failure | id-1=Failure 6995317496 ham=Failure | id-1=Failure
+2026-11-01 03:13:58 -> tool  start_stop_play(is_start, studio_id)
+2026-11-01 03:14:01 <- start_stop_play (2.8s): Game Started
+2026-11-01 03:14:14 -> tool  execute_luau(datamodel_type, code, studio_id)
+2026-11-01 03:14:15 <- execute_luau (0.3s): 89267995407736=Enum.AssetFetchStatus.Failure | 83084350609799=Enum.AssetFetchSta
+2026-11-01 03:14:27 -> tool  start_stop_play(is_start, studio_id)
+2026-11-01 03:14:28 <- start_stop_play (1.1s): Game Stopped
+2026-11-01 03:14:53 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-11-01 03:14:53 <- execute_luau (0.1s): Baslik pembe, Sepet emoji, Carte_Niv2 panel, Carte_Niv2 coin, Carte_Niv1 panel, 
+2026-11-01 03:15:02 -> tool  screen_capture(capture_id, studio_id)
+2026-11-01 03:15:02 <- screen_capture (0.6s): 
+2026-11-01 03:15:37 -> tool  start_stop_play(is_start, studio_id)
+2026-11-01 03:15:39 <- start_stop_play (2.9s): Game Started
+2026-11-01 03:16:10 -> tool  user_mouse_input(datamodel_type, actions, studio_id)
+2026-11-01 03:16:12 <- user_mouse_input (1.4s): Success
+2026-11-01 03:16:34 -> tool  execute_luau(code, datamodel_type, studio_id)
+2026-11-01 03:16:34 <- execute_luau (0.0s): Edit datamodel is not available in Play mode
+2026-11-01 03:16:47 -> tool  execute_luau(datamodel_type, code, studio_id)
+2026-11-01 03:16:47 <- execute_luau (0.1s): Gui Enabled=true Fenetre Visible=true Scale=0.950 Base=0.949516129032258 Mult=1 
+2026-11-01 03:17:06 -> tool  list_roblox_studios()
+2026-11-01 03:17:06 <- list_roblox_studios (0.0s): {"studios":[{"id":"c0ce14da-73c7-44aa-a20d-23151e40d140","name":"Place2"}]}
+2026-11-01 03:17:07 -> tool  execute_luau(datamodel_type, code, studio_id)
+2026-11-01 03:17:07 <- execute_luau (0.0s): Client datamodel is not available in Edit mode
